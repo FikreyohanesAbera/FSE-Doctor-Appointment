@@ -13,7 +13,7 @@ router.use(bodyParser.urlencoded({
   }));
 
 router.post('/register', (req, res) => {
-    const { name, email, password, passwordConfirm } = req.body;
+    const { firstName, lastName, email, password, passwordConfirm } = req.body;
     if (!email || !password) {
  
         res.redirect("/registererror?=missingdata");
@@ -30,19 +30,17 @@ router.post('/register', (req, res) => {
                 } else if (password != passwordConfirm) {
                     res.redirect("/register?error=mismatchingpassword");
 
+                } else{
+                    let hashedPassword = await bcrypt.hash(password, 8);
+
+                    db.query('INSERT INTO users SET ?', { firstName: firstName, lastName: lastName, email: email, password: hashedPassword }, (err, results) => {
+                        if (err) throw err;
+                    })
+                    res.redirect("/patient");
                 }
             }
 
-            let hashedPassword = await bcrypt.hash(password, 8);
-
-            db.query('INSERT INTO users SET ?', { name: name, email: email, password: hashedPassword }, (err, results) => {
-                if (err) {
-                    throw err;
-                } else {
-                            
-                    res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
-                }
-            })
+            
         })
 
     }

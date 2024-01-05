@@ -16,7 +16,7 @@ router.post("/apply",(req,res) => {
     req.body.end = moment(req.body.end, "HH:mm").toISOString();
 
 
-    db.query('INSERT INTO doctors SET ?', { name: req.body.name, phone: req.body.phone,fromTime: req.body.start,toTime: req.body.end, specialization: "orthopedics" }, (err, results) =>{
+    db.query('INSERT INTO doctors SET ?', { firstName: req.body.firstName, lastName: req.body.lastName, phone: req.body.phone,fromTime: req.body.start,toTime: req.body.end, specialization: "orthopedics" }, (err, results) =>{
         if (err) throw err;
         else{
             res.send("success");

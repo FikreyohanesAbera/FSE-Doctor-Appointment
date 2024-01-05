@@ -1,6 +1,7 @@
 const db = require("../routes/db-config");
 const jwt = require("jsonwebtoken");
 const loggedIn = async (req,res,next) => {
+    console.log("in logged in", req.cookies.userSave)
     if (req.cookies.userSave) {
         try {
             const decoded = await jwt.verify(req.cookies.userSave,
@@ -20,6 +21,7 @@ const loggedIn = async (req,res,next) => {
             return next();
         }
     } else {
+        console.log("not logged in")
         next();
     }
 

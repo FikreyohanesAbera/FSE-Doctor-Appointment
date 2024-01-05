@@ -13,6 +13,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Navbar</a>
+            <button class="btn btn-primary"><a style="color: white;" href="/logout">log out</a></button>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -22,12 +23,6 @@
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/register">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/login">Login</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/book">Book</a>
@@ -42,8 +37,12 @@
     <div class="container my-5">
         <div class="card" style="width: 40rem;">
             <div class="card-body">
-                <form action="/book" method="POST" id="form">
+                <form action="/book/submit" method="POST" id="form">
                     <h4>Book App</h4>
+                    <div class="mb-3">
+                        <label for="appointmentId" class="form-label">Appointment Id</label>
+                        <input type="number" class="form-control" id="appointmentId" name="time" readonly>
+                    </div>
                     <div class="mb-3">
                         <label for="time" class="form-label">Time</label>
                         <input type="time" class="form-control" id="time" name="time" required>
@@ -61,10 +60,24 @@
                     <button type="submit" class="btn btn-primary">Book</button>
 
                 </form>
+                <button class="button" class="btn btn-primary">Pay for appointment</button>
+
+                <script src="/script" ></script>
             </div>
         </div>
     </div>
     <script>
+        window.onload = function() {
+            fetch("/book/load")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("appointmentId").value = data.app;
+                document.getElementById("doctorid").value = data.doctorid;
+                console.log('appointment Id', data.app)
+            });
+            
+          };
+      
         const currentDate = new Date();
 
         const day = currentDate.getDate();

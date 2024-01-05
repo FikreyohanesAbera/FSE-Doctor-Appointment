@@ -13,6 +13,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Navbar</a>
+            <button class="btn btn-primary"><a style="color: white;" href="/logout">log out</a></button>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -23,12 +25,7 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/register">Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/login">Login</a>
-                    </li>
+                                        
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/book">Book</a>
                     </li>
@@ -45,8 +42,12 @@
                 <form action="/apply" method="POST" id="form">
                     <h4>Apply</h4>
                     <div class="mb-3">
-                        <label for="name" class="form-label">name</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
+                        <label for="firstName" class="form-label">First name</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastName" class="form-label">Last name</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" required>
                     </div>
                     <div class="mb-3">
                         <label for="spec" class="form-label">Specialization</label>
