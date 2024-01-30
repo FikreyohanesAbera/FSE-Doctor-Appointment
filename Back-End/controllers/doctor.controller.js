@@ -42,6 +42,15 @@ router.get('/:id?', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    result = await doctorsService.getDoctors();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Delete a doctor account
 router.delete('/:id', async (req, res) => {
   try {

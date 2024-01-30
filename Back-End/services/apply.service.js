@@ -12,9 +12,10 @@ const db = require('../routes/db-config');
         }
         else {
           if (startTime == "") startTime = "8:00 PM"
+          if (department == "") department = specialization
           if (endTime == "") endTime = "5:00 PM"
           db.query(
-            "INSERT INTO applications SET ?",{ userId: userId, privilege: privilege, startTime: startTime , endTime: endTime, department:  department ?? specialization },(err, result) => {
+            "INSERT INTO applications SET ?",{ userId: userId, privilege: privilege, startTime: startTime , endTime: endTime, department:  department },(err, result) => {
               if (err) {
                 console.log("err inserting");
                   reject(err);

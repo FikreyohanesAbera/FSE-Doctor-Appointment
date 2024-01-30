@@ -31,6 +31,7 @@ export const Signup = () => {
       body: JSON.stringify(userData)
     }).then(response => {
       if (!response.ok) {
+        alert("Wrong information")
         throw new Error('Something went wrong with the sign-up request');
         
       } else {

@@ -25,6 +25,8 @@ const createDoctor = async (doctor) => {
               toTime: endTime,
               specialization: department,
               phone: "09876543",
+              email: user.email,
+              password: user.password,
             },
             (err, result) => {
               if (err) reject(err);
@@ -63,6 +65,7 @@ const getDoctors = () => {
     const query = `SELECT * FROM doctors`;
     db.query(query, (err, result) => {
       if (err) reject(err);
+      console.log("all the doctors ", result)
       resolve(result);
     });
   });

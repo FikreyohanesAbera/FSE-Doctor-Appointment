@@ -9,11 +9,6 @@ const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const cors = require("cors");
 app.use(cors());
 
-app.use("/js", express.static(__dirname + "/public/js"));
-// app.use("/css",express.static(__dirname + "/public/css"));
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "ejs");
-
 app.use(cookieParser());
 app.use(express.json());
 
@@ -137,19 +132,6 @@ app.use("/users", userController);
 app.use("/doctors", doctorsController);
 app.use("/appointments", appointmentsController);
 app.use("/apply", applicationController);
-
-// app.use("/api",require("./controllers/"));
-
-app.use("/", require("./routes/pages"));
-// app.use("/api",require("./controllers"));
-
-// app.use("/",require("./controllers/apply"));
-// app.use("/book",require(("./controllers/book")).router);
-
-// app.use("/payment", require("./controllers/payment"))
-// app.use("/search",require("./controllers/search"));
-
-// app.use("/",require("./controllers/payment"))
 
 app.listen(port, function () {
   console.log("app running on port 3001");
