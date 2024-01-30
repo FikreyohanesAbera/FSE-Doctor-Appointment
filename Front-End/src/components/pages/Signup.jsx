@@ -1,14 +1,56 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState} from "react";
+import { useNavigate} from "react-router-dom";
 
 export const Signup = () => {
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  const [firstName, setFirstname] = useState('');
+  const [lastName, setLastname] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setConfirmPassword] = useState('');
+ 
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/Patient_pro");
+    
+    const userData = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      password,
+      passwordConfirm
+    }
+    console.log(userData)
 
-    // Add form submission logic here
+    fetch('http://localhost:3001/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userData)
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('Something went wrong with the sign-up request');
+        
+      } else {
+        alert("yes")
+      }
+
+      return response.json();
+    }).then(data => {
+      console.log('Sign-up data:', data);
+      const token = data.token;
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      document.cookie = `token=${token}; expires=${new Date(Date.now() + 3600000)}; path=/`;
+      navigate("/Patient_pro");
+    })
+    .catch(error => {
+      console.error('Error during sign-up:', error);
+    });
   };
+
+ 
 
   return (
     <div
@@ -30,18 +72,36 @@ export const Signup = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
-                htmlFor="fullName"
+                htmlFor="firstName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Full Name
+                First Name
               </label>
               <input
-                id="fullName"
-                name="fullName"
+                id="firstName"
+                name="firstName"
                 type="text"
                 required
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your full name"
+                placeholder="Enter your first name"
+                onChange={(event) => setFirstname(event.target.value)}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Last Name
+              </label>
+              <input
+                id="lastName"
+                name="lastName"
+                type="text"
+                required
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                placeholder="Enter your last name"
+                onChange={(event) => setLastname(event.target.value)}
               />
             </div>
             <div>
@@ -58,6 +118,7 @@ export const Signup = () => {
                 required
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 placeholder="Enter your email"
+                onChange={(event) => setEmail(event.target.value)}
               />
             </div>
             <div>
@@ -73,6 +134,7 @@ export const Signup = () => {
                 type="phone"
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 placeholder="Enter your phone number"
+                onChange={(event) => setPhone(event.target.value)}
               />
             </div>
             <div>
@@ -89,6 +151,8 @@ export const Signup = () => {
                 required
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 placeholder="Enter your password"
+                onChange={(event) => setPassword(event.target.value)}
+                
               />
             </div>
             <div>
@@ -105,6 +169,7 @@ export const Signup = () => {
                 required
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 placeholder="Enter your password"
+                onChange={(event) => setConfirmPassword(event.target.value)}
               />
             </div>
             <div className="text-center mt-4">

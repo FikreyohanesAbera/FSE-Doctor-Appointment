@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 
-export const Patient_pro = () => {
+export const LabTechnician = () => {
   const [firstName, setFirstname] = useState('');
   const [lastName, setLastname] = useState('');
   const [email, setEmail] = useState('');
@@ -41,7 +41,7 @@ export const Patient_pro = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="text-center text-3xl font-bold text-gray-800">
-            Patient Profile
+            Lab Technician Profile
           </h2>
         </div>
         <div className="flex flex-col items-center space-y-4">
@@ -53,21 +53,12 @@ export const Patient_pro = () => {
           <h3 className="text-xl font-bold">{firstName}</h3>
           <p>Email: {email}</p>
           <p>Phone: {phone}</p>
-        </div>
-        <div className="flex gap-5">
-          <div className="flex justify-center">
+        </div><div className="flex justify-center">
             <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
               View Medical Records
             </button>
           </div>
-          <Link to="/Privilage_doc">
-            <div className="flex justify-center">
-              <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                Apply for doctor
-              </button>
-            </div>
-          </Link>
-        </div>
+        
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
 import { useEffect, useRef } from "react";
+import { useNavigate} from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const navLinks = [
   {
@@ -22,6 +24,7 @@ const navLinks = [
 ];
 
 export const NavBar = () => {
+  const navigate = useNavigate();
   const headerRef = useRef(null);
   const menuRef = useRef(null);
 
@@ -37,6 +40,12 @@ export const NavBar = () => {
       }
     });
   };
+
+  const handleLogout = () => {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    Cookies.remove("userSave")
+    navigate("/Home");
+  }
 
   useEffect(() => {
     handleStickyHeader();
@@ -104,6 +113,12 @@ export const NavBar = () => {
                 Login
               </button>
             </Link>
+            <button onClick={handleLogout} className="bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
+                Logout
+              </button>
+            {/* <Link to="/Logout " className="login">
+              
+            </Link> */}
             <span className="md:hidden" onClick={toggleMenu}>
               <BiMenu className="w-6 h-6 cursor-pointer" />
             </span>

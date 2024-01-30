@@ -1,9 +1,67 @@
 import React from "react";
+import {  useState } from "react";
+import { useNavigate} from "react-router-dom";
 
 export const Privilage_doc = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [department, setDepartment] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [phone, setPhone] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
+   const token =  document.cookie;
+    const application = {
+      token,
+      email,
+      password,
+      privilege: role,
+      specialization,
+      startTime,
+      endTime,
+      department,
+      phone,
+    }
+    
+    fetch('http://localhost:3001/apply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(application)
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('Something went wrong with the sign-up request');
+      } else {
+        alert("Your application has been submitted!")
+      }
+
+      return response.json();
+    }).then(data => {
+       navigate("/Patient_pro");
+    })
+    .catch(error => {
+      console.error('Error during sign-up:', error);
+    });
     // Add form submission logic here
+  };
+  const handleRoleChange = (event) => {
+    setRole(event.target.value);
+    setSpecialization("");
+    setDepartment("");
+  };
+
+  const handleSpecializationChange = (event) => {
+    setSpecialization(event.target.value);
+  };
+
+  const handleDepartmentChange = (event) => {
+    setDepartment(event.target.value);
   };
 
   return (
@@ -17,43 +75,75 @@ export const Privilage_doc = () => {
         <div className="max-w-md w-full space-y-8">
           <div>
             <h2 className="text-center text-3xl font-bold text-gray-800">
-              Apply For Doctor
+              Apply For Work
             </h2>
+
             <p className="mt-2 text-center text-sm text-gray-600">
-              Create your doctor account
+              Are you a doctor or a lab technician?<br></br> Apply for an
+              account.
             </p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="fullName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Full Name
+            <div className="mb-4">
+              <label htmlFor="role" className="block mb-2">
+                Role
               </label>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your full name"
-              />
+              <div className="flex items-center">
+                <div className="flex items-center mr-4">
+                  <input
+                    type="radio"
+                    name="role"
+                    id="doctor"
+                    value="doctor"
+                    checked={role === "doctor"}
+                    onChange={handleRoleChange}
+                    className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                  />
+                  <label htmlFor="doctor" className="ml-2">
+                    Doctor
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    name="role"
+                    id="labtechnician"
+                    value="labtechnician"
+                    checked={role === "labtechnician"}
+                    onChange={handleRoleChange}
+                    className="form-radio h-4 w-4 text-indigo-600 transition duration-150 ease-in-out"
+                  />
+                  <label htmlFor="labtechnician" className="ml-2">
+                    Lab Technician
+                  </label>
+                </div>
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+
+            <div className="mb-4">
+              <label htmlFor="email" className="block mb-2">
                 Email
               </label>
               <input
-                id="email"
-                name="email"
                 type="email"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your email"
+                name="email"
+                id="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="block mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
             <div>
@@ -70,104 +160,70 @@ export const Privilage_doc = () => {
                 required
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 placeholder="Enter your phone number"
+                onChange={(event) => setPhone(event.target.value)}
+
               />
             </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your password"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="skills"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Skills
-              </label>
-              <input
-                id="skills"
-                name="skills"
-                type="text"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your skills"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="experience"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Experience
-              </label>
-              <input
-                id="experience"
-                name="experience"
-                type="text"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your experience"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="educationLevel"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Education Level
-              </label>
-              <input
-                id="educationLevel"
-                name="educationLevel"
-                type="text"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your education level"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="availableLocation"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Available Location
-              </label>
-              <input
-                id="availableLocation"
-                name="availableLocation"
-                type="text"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your available location"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="additionalBio"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Additional Bio
-              </label>
-              <textarea
-                id="additionalBio"
-                name="additionalBio"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter additional bio"
-                rows="3"
-              ></textarea>
-            </div>
+
+            {role === "doctor" && (
+              <div>
+                <div className="mb-4">
+                  <label htmlFor="specialization" className="block mb-2">
+                    Specialization
+                  </label>
+                  <input
+                    type="text"
+                    name="specialization"
+                    id="specialization"
+                    value={specialization}
+                    onChange={handleSpecializationChange}
+                    className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="start" className="block mb-2">
+                    Start time
+                  </label>
+                  <input
+                    type="time"
+                    name="startTime"
+                    id="start"
+                    value={startTime}
+                    onChange={(event) => setStartTime(event.target.value)}
+                    className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="endTime" className="block mb-2">
+                    End time
+                  </label>
+                  <input
+                    type="time"
+                    name="endTime"
+                    id="endTime"
+                    value={endTime}
+                    onChange={(event) => setEndTime(event.target.value)}
+                    className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+            )}
+            {role === "labtechnician" && (
+              <div className="mb-4">
+                <label htmlFor="department" className="block mb-2">
+                  Department
+                </label>
+                <input
+                  type="text"
+                  name="department"
+                  id="department"
+                  value={department}
+                  onChange={handleDepartmentChange}
+                  className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-"
+                />
+              </div>
+            )}
+
             <div>
               <button
                 type="submit"

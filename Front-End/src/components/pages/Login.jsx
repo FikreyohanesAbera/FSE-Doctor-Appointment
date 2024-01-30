@@ -1,6 +1,54 @@
-import React from "react";
+import React, { useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
 
-export const Login = () => {
+export const Login = (props) => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('')
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const user = {
+      email,
+      password,
+      role
+    }
+    // console.log("logging", user)
+    fetch('http://localhost:3001/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    }).then(response => {
+      if (!response.ok) {
+        alert("Wrong Credentials.")
+        throw new Error('Something went wrong with the sign-up request');
+      } 
+
+      return response.json();
+    }).then(data => {
+      console.log('login data:', data);
+      const token = data.token;
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      document.cookie = `token=${token}; expires=${new Date(Date.now() + 3600000)}; path=/`;
+      if (user.role == "user"){
+        navigate('/Patient_pro');
+      } else if(user.role == "admin"){
+        navigate('/Admin');
+      } else if (user.role == "labtechnician"){
+        navigate('/LabTechnician');
+      }
+      
+    })
+    .catch(error => {
+      console.error('Error during login:', error);
+    });
+
+}
+
+    
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover"
@@ -11,7 +59,7 @@ export const Login = () => {
       <div className="flex items-center justify-center bg-white mt-5">
         <div className=" shadow-md rounded-lg p-8 w-96">
           <h1 className="text-3xl font-bold mb-6 text-gray-800">Login</h1>
-          <form className="grid grid-cols-1 gap-4">
+          <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="text-gray-800">
                 Email
@@ -22,6 +70,7 @@ export const Login = () => {
                 name="email"
                 placeholder="Your Email"
                 className="w-full border border-gray-300 rounded-md py-2 px-3 text-gray-800 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(event) => setEmail(event.target.value)}
               />
             </div>
             <div>
@@ -34,9 +83,71 @@ export const Login = () => {
                 name="password"
                 placeholder="Your Password"
                 className="w-full border border-gray-300 rounded-md py-2 px-3 text-gray-800 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={(event) => setPassword(event.target.value)}
               />
             </div>
+            <div className="grid-flow-col">
+          <div className="grid-flow-col grid-cols-2 grid-rows-2 gap-4">
+            <div className="form-check ">
+              <input
+                className="form-check-input mr-2 "
+                type="radio"
+                name="role"
+                id="user-radio"
+                value="doctor"
+                required
+                onChange={(event) => setRole(event.target.value)}
+              />
+              <label className="form-check-label" htmlFor="user-radio">
+                Doctor
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                className="form-check-input mr-2"
+                type="radio"
+                name="role"
+                id="user-radio"
+                value="user"
+                required
+                onChange={(event) => setRole(event.target.value)}
+              />
+              <label className="form-check-label" htmlFor="user-radio">
+                User
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                className="form-check-input mr-2"
+                type="radio"
+                name="role"
+                id="lab-radio"
+                value="labtechnician"
+                required
+                onChange={(event) => setRole(event.target.value)}
+              />
+              <label className="form-check-label" htmlFor="lab-radio">
+                Lab Technician
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                className="form-check-input mr-2"
+                type="radio"
+                name="role"
+                id="admin-radio"
+                value="admin"
+                required
+                onChange={(event) => setRole(event.target.value)}
+              />
+              <label className="form-check-label" htmlFor="admin-radio">
+                Admin
+              </label>
+            </div>
+          </div>
+        </div>
             <div className="flex items-center justify-between">
+              
               <div>
                 <label className="flex items-center cursor-pointer">
                   <input
@@ -63,7 +174,7 @@ export const Login = () => {
 
             <div className="mt-6 text-center">
               <p className="text-gray-800">Don't have an account?</p>
-              <a href="#" className="text-blue-500 hover:underline">
+              <a href="/Signup" className="text-blue-500 hover:underline">
                 Sign Up
               </a>
             </div>
@@ -82,3 +193,4 @@ export const Login = () => {
     </div>
   );
 };
+
