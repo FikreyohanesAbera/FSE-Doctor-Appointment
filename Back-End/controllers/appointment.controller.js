@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const appointmentsService = require('../services/appointment.service');
-
+const jwt = require("jsonwebtoken");
 // Create a new appointment
 router.post('/', async (req, res) => {
   try {
@@ -12,6 +12,25 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+router.get('/user', async (req, res) => {
+  try {
+    console.log("user appointments")
+    if(req.cookies.token){
+      const decoded = await jwt.verify(req.cookies.token,
+        process.env.JWT_SECRET
+      );
+      console.log("user appointments", decoded.id )
+   
+    const result = await appointmentsService.getAppointments(decoded.id);
+    console.log("result of appointment fetch", result)
+    if (result) res.status(201).json(result);
+    else res.status(500);
+  }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+   }
+);
 
 
 

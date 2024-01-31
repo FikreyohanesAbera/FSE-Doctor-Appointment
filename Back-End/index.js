@@ -151,8 +151,9 @@ db.connect((err) => {
           if (err) throw err;
         }
       );
+      
       db.query(
-        "CREATE TABLE IF NOT EXISTS appointments(appointmentid INT AUTO_INCREMENT PRIMARY KEY, doctorid INT, patientid INT, time VARCHAR(100), date VARCHAR(100), paid TINYINT NOT NULL DEFAULT 0)",
+        "CREATE TABLE IF NOT EXISTS appointments (appointmentid INT AUTO_INCREMENT PRIMARY KEY, doctorid INT, patientid INT, time VARCHAR(100), date VARCHAR(100), paid TINYINT NOT NULL DEFAULT 0, FOREIGN KEY (doctorid) REFERENCES doctors(id), FOREIGN KEY (patientid) REFERENCES patients(id))",
         (err, result) => {
           if (err) throw err;
         }
@@ -172,12 +173,14 @@ const doctorsController = require("./controllers/doctor.controller");
 const appointmentsController = require("./controllers/appointment.controller");
 const authController = require("./controllers/auth.controller");
 const applicationController = require("./controllers/apply.controller");
+const paymentController = require("./controllers/payment.controller");
 
 app.use("/auth", authController);
 app.use("/users", userController);
 app.use("/doctors", doctorsController);
 app.use("/appointments", appointmentsController);
 app.use("/application", applicationController);
+app.use("/payment", paymentController);
 
 app.use("/",require("./routes/pages"));
 app.use("/",require("./controllers/book"));

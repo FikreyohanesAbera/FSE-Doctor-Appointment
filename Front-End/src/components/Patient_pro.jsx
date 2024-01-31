@@ -9,7 +9,35 @@ export const Patient_pro = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [data, setData] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
+
+  const fetchMyAppointments = () => {
+    console.log("fetching user appointments")
+    fetch("http://localhost:3001/appointments/user",{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: "include"
+    })
+    .then(response => {
+      if(response.ok){
+        console.log("It's okay")
+      }
+      else{
+        console.log("not ok")
+      }
+      return response.json()
+    })
+    .then(data => {
+      console.log("fetched appointments", data);
+      setAppointments(data)
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
   const fetchMyApplications = () => {
     console.log("fetching user apps")
     fetch("http://localhost:3001/application/user",{
@@ -47,7 +75,8 @@ export const Patient_pro = () => {
       .catch((error) => {
         console.error('Error:', error);
       });
-        fetchMyApplications();
+        // fetchMyApplications();
+        fetchMyAppointments();
       }
       
     , []); // Empty dependency array to run the effect only once when the component mounts
@@ -133,6 +162,23 @@ export const Patient_pro = () => {
                 
             </div>
             ))}
+
+          <div className="p-5 bg-blue-400  m-5">
+            <h2 className="text-center text-3xl">My Appointments</h2>
+            {appointments.map((appointment) => (
+                <div key={appointment.appointmentid}
+                className="bg-white p-6 min-w-full rounded-md shadow-md mb-3"
+              >
+                <h3 className="text-xl font-semibold mb-2">Patient Id : {appointment.patientd}</h3>
+                <p className="text-gray-700 mb-4">Doctor: {appointment.doctor}</p>
+                <p className="text-gray-800 mb-4">Status: {appointment.paid ? 'Paid' : 'Unpaid'}</p>
+                <p className="text-gray-800 mb-4">Date: {appointment.date}</p>
+                <p className="text-gray-800 mb-4">Time: {appointment.time}</p>
+                
+                  
+              </div>
+              ))}
+          </div>
       {(reached) ?
         <div class="max-w-4xl mx-auto my-4">
 

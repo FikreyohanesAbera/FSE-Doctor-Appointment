@@ -47,9 +47,15 @@ const bookAppointment = async (req, res) => {
   }
 };
 
-const getAppointments = async (doctorid) => {
-  const query = 'SELECT time,date from appointments WHERE doctorid = ?';
-  const results = await executeQuery(query, [doctorid]);
+const getAppointments = async (id) => {
+  
+  const query = `SELECT appointments.* , doctors.firstName AS doctor
+  FROM appointments 
+  JOIN doctors ON appointments.doctorid = doctors.id
+  WHERE appointments.patientid = ?;`
+  const query2 = 'SELECT firstName from doctors WHERE id = ?';
+  const results = await executeQuery(query, [id]);
+  console.log("get apps", id, results.length)
   return results;
 };
 
@@ -92,17 +98,14 @@ const createAppointment = (appointment) => {
     });
   });
 };
-const updateAppointment = (appointment) => {
-    const { id, doctorId, patientId, startTime, endTime } = appointment;
+const updateAppointment = (appointmentid) => {
+    // const { id, doctorId, patientId, startTime, endTime } = appointment;
+    console.log("inside updateAppointment")
     return new Promise((resolve, reject) => {
-      const query = `UPDATE appointments SET doctor_id = ${doctorId}, patient_id = ${patientId}, start_time = '${startTime}', end_time = '${endTime}' WHERE id = ${id}`;
+      const query = `UPDATE appointments SET paid = ${1} WHERE appointmentid= ${appointmentid}`;
       db.query(query, (err, result) => {
         if (err) {
-          if (err.code === 'ER_DUP_ENTRY') {
-            reject(new Error('This appointment time is already taken'));
-          } else {
-            reject(err);
-          }
+           reject(err);
         } else {
           resolve(result);
         }
@@ -145,6 +148,7 @@ module.exports = {
   bookAppointment,
   getAppointmentsByDoctorId,
   getAppointmentsByPatientId,
+  getAppointments,
   updateAppointment,
   deleteAppointment
 };

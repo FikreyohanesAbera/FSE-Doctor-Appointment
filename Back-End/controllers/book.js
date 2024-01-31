@@ -57,16 +57,27 @@ router.post("/book", loggedIn, (req, res) => {
                 const storedStartTimeDate = new Date(`2024-01-01 ${responses[0].fromTime}`);
                 const storedFinishTimeDate = new Date(`2024-01-01 ${responses[0].toTime}`);
                 if ( storedStartTimeDate < compareTimeDate && compareTimeDate <= new Date(storedFinishTimeDate.getTime() - 30 * 60000)) {
-                    console.log("very true")
+                    console.log("verytrue", req.user)
                     // will change to ...
                     db.query('INSERT INTO appointments SET ?', { doctorid: Number(req.body.doctorid), patientid: [req.user.id], time: inputTime, date: req.body.date }, (err, results) => {
                         if (err) throw err;
                         else {
-                            res.json({
-                                status: "success",
-                                customCodee: 10,
-                                message: "successfully booked"
-                            });
+                            db.query('SELECT * FROM appointments WHERE appointmentid=(SELECT max(appointmentid) FROM appointments)', async (err, results) => {
+                                console.log(results)
+                                 if (!results || results.length == 0){
+                                    res.json()
+                                } else{
+                                    console.log("results", results)
+                                    res.json({
+                                        status: "success",
+                                        customCodee: 10,
+                                        message: "successfully booked",
+                                        appointmentid: results[0].appointmentid,
+                                    });
+                                     
+                                }
+                             })
+                            
                         }
                     })
                 }

@@ -19,6 +19,7 @@ import {LabTechnician} from "./components/pages/LabTechnician";
 // import PdfUploader from "./components/pages/PdfUploader";
 import {MedicalHistory} from "./components/pages/medicalhistory";
 import {VisitHistory} from "./components/pages/VisitHistory";
+import {PaymentSuccessPage} from "./components/pages/PaymentSuccess";
 import DoctorProfile from "./components/pages/doctors/DoctorProfile";
 const App = () => (
   <>
@@ -45,6 +46,7 @@ const App = () => (
         {/* <Route path = "/labtest" element = {<PdfUploader/>}/>  */}
         <Route path = "/medicalhistory" element = {<MedicalHistory/>}/> 
         <Route path = "/visithistory" element = {<VisitHistory/>}/> 
+        <Route path="/payment/success" element={<PaymentSuccessPage />} />
         
       </Routes>
     </main>
