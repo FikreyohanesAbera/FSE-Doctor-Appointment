@@ -71,8 +71,12 @@ export const Patient_pro = () => {
     })
       .then(res => res.json())
       .then(response => {
-        setFileName(response.filePath);
-        setIsEmpty(false);
+        if (response.filePath){
+          setFileName(response.filePath);
+          setIsEmpty(false);
+
+        }
+
       })
 
   }, [])
@@ -146,9 +150,9 @@ export const Patient_pro = () => {
               {info.map((elt) => (
 
                 <tr>
-                  <td class="py-2 px-4 border-b">{elt.docName}</td>
-                  <td class="py-2 px-4 border-b">{elt.data.description}</td>
-                  <td class="py-2 px-4 border-b">{elt.data.date}</td>
+                  <td className="py-2 px-4 border-b">{elt.docName}</td>
+                  <td className="py-2 px-4 border-b">{elt.data.description}</td>
+                  <td className="py-2 px-4 border-b">{elt.data.date}</td>
                 </tr>
 
 

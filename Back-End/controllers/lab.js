@@ -17,7 +17,6 @@ router.use(bodyParser.urlencoded({
 router.post("/labrequest", loggedIn, (req, res) => {
     let userId;
     let docName;
-    console.log("uniqqqqqqqqqqq")
     db.query('SELECT id FROM users WHERE email = ?', [req.body.email], (err, results) => {
         if (err) throw err;
         else {
@@ -60,14 +59,12 @@ router.post("/labTechReq", loggedIn, (req, res) => {
 })
 
 router.post("/rejectlabapply", (req, res) => {
-    console.log("called")
     db.query("UPDATE labrequest SET status = ?  WHERE labreqId = ?", ["rejected", req.body.labreqId], (err, innerresults) => {
         if (err) throw err;
     })
 
 })
 router.post("/checkup", loggedIn, (req, res) => {
-    console.log(req.body.date)
     db.query('INSERT INTO checkups SET ?', {
         doctorId: req.user.id,
         patientEmail: req.body.email,
@@ -155,9 +152,40 @@ router.post("/labresult",loggedIn,(req,res) => {
     db.query("SELECT email FROM users WHERE id = ?",req.user.id,(err,results) => {
         db.query("SELECT filepath FROM labtest WHERE patientEmail = ?",results[0].email,(error,resultz) => {
             if (error) throw error;
-            res.json({
-                filePath: resultz[0].filepath
-            })
+            if (resultz.length > 0){
+                return res.json({
+                    filePath: resultz[0].filepath
+                })
+
+            }
+            else{
+                return res.json({
+                    filePath: ''
+                })
+            }
+
+
+        })
+
+    })
+    
+});
+router.post("/labdocresult",loggedIn,(req,res) => {
+    db.query("SELECT email FROM users WHERE id = ?",req.user.id,(err,results) => {
+        db.query("SELECT filepath FROM labtest WHERE doctorEmail = ?",results[0].email,(error,resultz) => {
+            if (error) throw error;
+            if (resultz.length > 0){
+                return res.json({
+                    filePath: resultz[0].filepath
+                })
+
+            }
+            else{
+                return res.json({
+                    filePath: ''
+                })
+            }
+
 
         })
 
@@ -166,7 +194,6 @@ router.post("/labresult",loggedIn,(req,res) => {
 });
 
 router.get('/download/:filename', (req, res) => {
-    console.log(filename);
 
   const filename = req.params.filename;
   const filePath = path.join(filename);

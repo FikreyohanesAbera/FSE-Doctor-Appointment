@@ -22,7 +22,6 @@ router.post("/patientmedhistory",loggedIn,(req,res) => {
                 message: "doctor did not log in"
             });
         }
-        console.log(req.body.email)
         db.query("SELECT id FROM users WHERE email = ?",[req.body.email],(err,results2) => {
             if (results2.length === 0){
                 return res.json({
@@ -30,7 +29,6 @@ router.post("/patientmedhistory",loggedIn,(req,res) => {
                     message: "patient does not exist"
                 })
             }
-            console.log("yessssssssss")
 
             db.query('INSERT INTO patienthistory SET ?',{
                 doctorId: results[0].id,

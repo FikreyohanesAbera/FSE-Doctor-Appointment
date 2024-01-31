@@ -6,7 +6,6 @@ const doctorsService = require('../services/doctor.service');
 router.post('/', async (req, res) => {
   try {
     const doctor = req.body;
-    console.log(doctor)
     const result = await doctorsService.createDoctor(doctor);
     res.status(201).json(result);
   } catch (error) {

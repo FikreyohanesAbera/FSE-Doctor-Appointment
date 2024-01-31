@@ -7,7 +7,6 @@ const loggedIn = async (req,res,next) => {
                 req.body.token.split("=")[1],
                 process.env.JWT_SECRET
               );
-              console.log("hit get patient controller", decoded.id, decoded);
               const id = decoded.id;
 
             db.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {

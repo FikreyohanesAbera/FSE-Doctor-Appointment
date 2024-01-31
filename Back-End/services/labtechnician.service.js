@@ -9,15 +9,12 @@ const createLabTechnician = async (labtechnician) => {
   );
   return new Promise((resolve, reject) => {
     
-    console.log("lab tech to be created", labtech);
     db.query(
       "SELECT * FROM labtechnicians WHERE email= ?",
       [labtech.email],
       (err, result) => {
         if (err) reject(err);
-        console.log("result", result)
         if (result.length > 0) {
-          console.log("the duplicate labtech", result);
           resolve(result[0]);
         } else {
           db.query(

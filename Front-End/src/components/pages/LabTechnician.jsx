@@ -23,7 +23,6 @@ export const LabTechnician = () => {
       .then(response => response.json())
       .then(data => {
         // Handle the fetched data
-        console.log(data);
         setEmail(data.email)
         setFirstname(data.firstName)
         setPhone(data.phone)
@@ -39,21 +38,10 @@ export const LabTechnician = () => {
   const [doctorEmail, setDoctorEmail] = useState('');
   const [file, setFile] = useState(null);
   const formData = new FormData();
-  formData.append('file', file); // 'file' should match the field name in your backend
+  formData.append('file', file); 
   formData.append('patientEmail', patientEmail);
   formData.append('doctorName', doctorEmail);
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   if (name === 'patientEmail') {
-  //     setPatientEmail(value);
-  //   } else if (name === 'doctorEmail') {
-  //     setDoctorEmail(value);
-  //   } else if (name === 'file') {
-  //     setFile(e.target.files[0]);
-  //   }
 
-
-  // };
   const handleSubmit = (e) => {
     e.preventDefault();
     let sentData = formData;
@@ -68,7 +56,7 @@ export const LabTechnician = () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data)
+        alert(data.message);
       })
 
     console.log('Patient Email:', patientEmail);
@@ -158,11 +146,6 @@ export const LabTechnician = () => {
               </button>
             </div>
           </form>
-        </div>
-        <div className="flex justify-center">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-            View Medical Records
-          </button>
         </div>
 
       </div>

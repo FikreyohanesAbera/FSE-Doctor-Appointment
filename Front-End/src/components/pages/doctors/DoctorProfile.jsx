@@ -4,6 +4,7 @@ function DoctorProfile() {
     const [data, setData] = useState({
 
     });
+    const [filename, setFileName] = useState('');
     const [visits, setVisits] = useState([]);
     const [history, setHistory] = useState({
 
@@ -14,6 +15,8 @@ function DoctorProfile() {
     const [formDataY, setFormDataY] = useState({
 
     });
+    const [isempty, setIsEmpty] = useState(true);
+
     const [error, setError] = useState('')
     const handleChange = (e) => {
 
@@ -31,6 +34,32 @@ function DoctorProfile() {
             [name]: value,
         });
     };
+    useEffect(() => {
+        const token = document.cookie;
+        fetch("http://localhost:3001/labdocresult", {
+          method: 'POST',
+          body: JSON.stringify({
+            token: token
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(res => res.json())
+          .then(response => {
+            if (response.filePath){
+                console.log(response);
+              setFileName(response.filePath);
+              setIsEmpty(false);
+    
+            }
+    
+          })
+    
+      }, [])
+      const handleDownload = () => {
+        window.open(`http://localhost:3001/download/${filename}`, '_blank');
+      };
     useEffect(() => {
         // mine
         fetch("http://localhost:3001/doctorProfile", {
@@ -395,6 +424,12 @@ function DoctorProfile() {
                         Order checkup
                     </button>
                 </Link>
+                {(!isempty) ?
+            <div className="text-center mt-5">
+              <h2 className="text-center text-3xl font-bold text-gray-800">LabResults</h2>
+              <button className="bg-blue-500 my-3 m-auto text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onClick={handleDownload}>
+                Download File
+              </button> </div> : null}
 
             </div>
 

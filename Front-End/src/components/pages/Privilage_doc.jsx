@@ -165,6 +165,7 @@ export const Privilage_doc = () => {
               />
             </div>
 
+
             {role === "doctor" && (
               <div>
                 <div className="mb-4">

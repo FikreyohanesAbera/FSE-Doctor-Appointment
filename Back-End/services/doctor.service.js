@@ -2,10 +2,9 @@ const db = require("../routes/db-config");
 const patientsService = require("./user.service");
 const createDoctor = async (doctor) => {
   const user = await patientsService.getUser(doctor.userId, "user");
-  console.log("user", user);
   const duplicate = await patientsService.getUser(doctor.userId, "doctor");
 
-  const { startTime, endTime, department } = doctor;
+  const { startTime, endTime, department} = doctor;
   return new Promise((resolve, reject) => {
     db.query(
       "SELECT * FROM doctors WHERE email= ?",
@@ -13,7 +12,6 @@ const createDoctor = async (doctor) => {
       (err, result) => {
         if (err) reject(err);
         if (result.length > 0) {
-          console.log("the duplicate doctor", result);
           resolve(result[0]);
         } else {
           db.query("SELECT id FROM users WHERE email = ?",user.email,(err,resultz) => {
@@ -28,7 +26,7 @@ const createDoctor = async (doctor) => {
                 phone: "09876543",
                 email: user.email,
                 password: user.password,
-                userId: resultz[0].id
+                userId: resultz[0].id,
               },
               (err, result) => {
                 if (err) reject(err);
@@ -70,7 +68,6 @@ const getDoctors = () => {
     const query = `SELECT * FROM doctors`;
     db.query(query, (err, result) => {
       if (err) reject(err);
-      console.log("all the doctors ", result)
       resolve(result);
     });
   });
