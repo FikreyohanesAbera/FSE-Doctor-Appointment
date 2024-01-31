@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 function DoctorProfile() {
     const [data, setData] = useState({
 
@@ -94,6 +95,11 @@ function DoctorProfile() {
                 console.log(data);
                 if (!data.status === "success") {
                     setError("request unsuccessful");
+                    alert("Something went wrong")
+
+                }
+                else {
+                    alert("success");
 
                 }
             })
@@ -106,7 +112,7 @@ function DoctorProfile() {
         sentData["token"] = document.cookie;
 
 
-        fetch("http://localhost:3001/patienthistory", {
+        fetch("http://localhost:3001/patientmedhistory", {
             method: 'POST',
             credentials: "include",
 
@@ -119,7 +125,11 @@ function DoctorProfile() {
                 console.log(data);
                 if (data.status === "error") {
                     setError("request unsuccessful");
+                    alert("Something went wrong")
 
+                }
+                else {
+                    alert("Successfully Recorded")
                 }
                 // else{
 
@@ -365,6 +375,13 @@ function DoctorProfile() {
                         </div>
                     </div>
                 </div>
+                <Link to={`/OrderCheckup`} className="p-5">
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Order checkup
+                    </button>
+                </Link>
 
             </div>
 

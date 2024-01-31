@@ -5,7 +5,8 @@ const express = require("express");
 const db = require('../routes/db-config');
 const bodyParser = require("body-parser");
 const loggedIn = require("./loggedin");
-
+const multer = require('multer');
+const path = require("path");
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({
@@ -50,50 +51,132 @@ router.post("/labrequest", loggedIn, (req, res) => {
 
 })
 
-router.post("/labTechReq",loggedIn, (req, res) => {
+router.post("/labTechReq", loggedIn, (req, res) => {
     let labreqId = req.body.labreqId;
 
-        db.query("UPDATE labrequest SET status = ?  WHERE labreqId = ?", ["approved", labreqId], (err, innerresults) => {
-            if (err) throw err;
-        })
+    db.query("UPDATE labrequest SET status = ?  WHERE labreqId = ?", ["approved", labreqId], (err, innerresults) => {
+        if (err) throw err;
     })
+})
 
-router.post("/rejectlabapply",(req,res)=>{
+router.post("/rejectlabapply", (req, res) => {
     console.log("called")
     db.query("UPDATE labrequest SET status = ?  WHERE labreqId = ?", ["rejected", req.body.labreqId], (err, innerresults) => {
         if (err) throw err;
     })
 
 })
-router.post("/checkup",loggedIn,(req,res) => {
+router.post("/checkup", loggedIn, (req, res) => {
     console.log(req.body.date)
-    db.query('INSERT INTO checkups SET ?',{
+    db.query('INSERT INTO checkups SET ?', {
         doctorId: req.user.id,
         patientEmail: req.body.email,
         description: req.body.desc,
         date: req.body.date
 
-    },(err) => {
+    }, (err) => {
         if (err) throw err;
-        res.send("success")
+        res.json({ status: "success" })
     }
-        )
+    )
 })
-router.post('/labtest', (req, res) => {
-    const { fileName, description } = req.body;
+// router.post('/labtest', (req, res) => {
+//     const { fileName, description } = req.body;
+
+//     // Insert data into MySQL
+//     const sql = 'INSERT INTO labtest (fileName, description) VALUES (?, ?)';
+//     db.query(sql, [fileName, description], (err, result) => {
+//         if (err) {
+//             console.error('Error inserting data into MySQL:', err);
+//             res.status(500).json({ error: 'Internal Server Error' });
+//         } else {
+//             console.log('Data inserted into MySQL:', result);
+//             res.status(200).json({ message: 'Form submitted successfully' });
+//         }
+//     });
+// });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, '../../uploads');
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`);
+  },
+});
+
+const upload = multer({ storage: storage });
+router.post('/labtest', upload.single('file'), (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
   
-    // Insert data into MySQL
-    const sql = 'INSERT INTO your_table_name (fileName, description) VALUES (?, ?)';
-    db.query(sql, [fileName, description], (err, result) => {
+    const { patientEmail, doctorName } = req.body;
+    const filePath = req.file.path;
+  
+    // Insert data into the database
+    const insertQuery = 'INSERT INTO labtest (patientEmail, doctorEmail, filepath) VALUES (?, ?, ?)';
+    const values = [patientEmail, doctorName, filePath];
+  
+    db.query(insertQuery, values, (err, results) => {
       if (err) {
-        console.error('Error inserting data into MySQL:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        console.log('Data inserted into MySQL:', result);
-        res.status(200).json({ message: 'Form submitted successfully' });
+        console.error('Error inserting data into database:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
+  
+      return res.status(201).json({ message: 'File uploaded and data stored successfully' });
     });
   });
+  
+
+  
+//   // Express middleware for handling file uploads
+//   router.post('/labtest', upload.single('file'), (req, res) => {
+//     const { patientName, doctorName } = req.body;
+//     const filePath = req.file.path;
+  
+//     // Insert data into the database
+//     const insertQuery = 'INSERT INTO labtest (patientName, doctorName, filePath) VALUES (?, ?, ?)';
+//     const values = [patientName, doctorName, filePath];
+  
+//     db.query(insertQuery, values, (err, results) => {
+//       if (err) {
+//         console.error('Error inserting data into database:', err);
+//         return res.status(500).json({ error: 'Internal Server Error' });
+//       }
+  
+//       return res.status(201).json({ message: 'File uploaded and data stored successfully' });
+//     });
+//   });
+
+router.post("/labresult",loggedIn,(req,res) => {
+    db.query("SELECT email FROM users WHERE id = ?",req.user.id,(err,results) => {
+        db.query("SELECT filepath FROM labtest WHERE patientEmail = ?",results[0].email,(error,resultz) => {
+            if (error) throw error;
+            res.json({
+                filePath: resultz[0].filepath
+            })
+
+        })
+
+    })
+    
+});
+
+router.get('/download/:filename', (req, res) => {
+    console.log(filename);
+
+  const filename = req.params.filename;
+  const filePath = path.join(filename);
+
+  // Set appropriate headers for the download
+  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+  res.setHeader('Content-Type', 'application/pdf'); // Adjust content type based on your file type
+
+  // Send the file
+});
 module.exports = router;
 
 

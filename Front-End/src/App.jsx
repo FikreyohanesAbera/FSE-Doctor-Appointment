@@ -20,6 +20,8 @@ import {LabTechnician} from "./components/pages/LabTechnician";
 import {MedicalHistory} from "./components/pages/medicalhistory";
 import {VisitHistory} from "./components/pages/VisitHistory";
 import DoctorProfile from "./components/pages/doctors/DoctorProfile";
+import OrderCheckup from "./components/pages/doctors/OrderCheckup";
+
 const App = () => (
   <>
     <NavBar />
@@ -45,6 +47,9 @@ const App = () => (
         {/* <Route path = "/labtest" element = {<PdfUploader/>}/>  */}
         <Route path = "/medicalhistory" element = {<MedicalHistory/>}/> 
         <Route path = "/visithistory" element = {<VisitHistory/>}/> 
+        <Route path = "/ordercheckup" element = {<OrderCheckup/>}/> 
+
+
         
       </Routes>
     </main>

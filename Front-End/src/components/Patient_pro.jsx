@@ -8,56 +8,77 @@ export const Patient_pro = () => {
   const [lastName, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  
+  const [filename,setFileName] = useState('');
+
   useEffect(() => {
-        const token= document.cookie;
-        fetch(`http://localhost:3001/users/profile`, {
-          method: 'POST',
-          credentials: "include",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            token
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          // Handle the fetched data
-          console.log(data);
-          setEmail(data.email)
-          setFirstname(data.firstName)
-          setPhone(data.phone)
-          // patientData = data
-        })
-        .catch((error) => {
-          // Handle any errors that occur
-          console.error('Error:', error);
-        });
-      }
-    , []); // Empty dependency array to run the effect only once when the component mounts
-    const [reached, setReached] = useState(false);
-    const [info, setInfo] = useState([]);
-
-    useEffect(() => {
-      const token = document.cookie;
-
-      fetch("http://localhost:3001/patient", {
-        method: 'POST',
-        body: JSON.stringify({
-          token: token
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const token = document.cookie;
+    fetch(`http://localhost:3001/users/profile`, {
+      method: 'POST',
+      credentials: "include",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token
       })
-        .then(res => res.json())
-        .then(response => {
-          console.log(response.checkups);
-          setInfo(response.checkups);
-          setReached(true);
-        })
-    }, [])
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the fetched data
+        console.log(data);
+        setEmail(data.email)
+        setFirstname(data.firstName)
+        setPhone(data.phone)
+        // patientData = data
+      })
+      .catch((error) => {
+        // Handle any errors that occur
+        console.error('Error:', error);
+      });
+  }
+    , []); // Empty dependency array to run the effect only once when the component mounts
+  const [reached, setReached] = useState(false);
+  const [info, setInfo] = useState([]);
+
+  useEffect(() => {
+    const token = document.cookie;
+
+    fetch("http://localhost:3001/patient", {
+      method: 'POST',
+      body: JSON.stringify({
+        token: token
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(response => {
+        setInfo(response.checkups);
+        setReached(true);
+      })
+  }, [])
+  useEffect(()=>{
+    const token = document.cookie;
+    fetch("http://localhost:3001/labresult", {
+      method: 'POST',
+      body: JSON.stringify({
+        token: token
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(response => {
+        setFileName(response.filePath);
+      })
+
+  },[])
+    const handleDownload = () => {
+      console.log(filename);
+      window.open(`http://localhost:3001/download/${filename}`, '_blank');
+    };
 
   return (
     <div>
@@ -106,6 +127,7 @@ export const Patient_pro = () => {
           </div>
         </div>
       </div>
+      <h1 className="text-center text-3xl font-bold text-gray-800"> Checkups </h1>
       {(reached) ?
         <div class="max-w-4xl mx-auto my-4">
 
@@ -133,6 +155,10 @@ export const Patient_pro = () => {
               ))}
             </tbody>
           </table>
+          <button className="bg-blue-500 my-6 m-auto text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onClick={handleDownload}>
+            Download File
+          </button>
+          {/* <DownloadButton filename="1706701040292.pdf" /> */}
         </div>
 
         : null}
@@ -140,6 +166,6 @@ export const Patient_pro = () => {
       {/* <div className="App"> <h2>Checkup Recommendations</h2><span> {info.checkup.docName}  </span><h3> {info.checkup.data.description}  </h3><h3> {info.checkup.data.date}  </h3></div> : null} */}
 
     </div>
-    
+
   );
 };

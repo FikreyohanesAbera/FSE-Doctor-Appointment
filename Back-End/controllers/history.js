@@ -13,9 +13,9 @@ router.use(bodyParser.urlencoded({
 }));
 
 
-router.post("/patienthistory",loggedIn,(req,res) => {
+router.post("/patientmedhistory",loggedIn,(req,res) => {
     // will change later
-    db.query("SELECT id FROM doctors WHERE userId = ?",7,(err,results) => {
+    db.query("SELECT id FROM doctors WHERE userId = ?",req.user.id,(err,results) => {
         if (results.length === 0){
             return res.json({
                 status: "error",

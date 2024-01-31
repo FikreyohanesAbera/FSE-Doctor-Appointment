@@ -24,7 +24,8 @@ const moment = require("moment");
 
 function getDoctorName(doctorId) {
     return new Promise((resolve, reject) => {
-        db.query("SELECT name FROM doctors WHERE id = ?", [doctorId], (err, doctorName) => {
+        db.query("SELECT firstName FROM doctors WHERE id = ?", [doctorId], (err, doctorName) => {
+            console.log(doctorName[0])
             if (err) {
                 reject(err);
             } else {
@@ -85,18 +86,16 @@ router.post("/patient", loggedIn, (req, res) => {
 
 })
 router.post("/doctorProfile", loggedIn, (req, res) => {
-    console.log(req.body.token);
+    console.log(req.user.id);
 
     db.query('SELECT * FROM doctors WHERE userId = ?', [req.user.id], (err, results) => {
         if (err) throw err;
+        console.log(results)
         const correcteddata = {
-            name: results[0].name,
+            name: results[0].firstName + results[0].lastName,
             specialization: results[0].specialization,
             fromTime: results[0].fromTime,
             toTime: results[0].toTime,
-            fromTime: moment(results[0].fromTime).format("LT"),
-            toTime: moment(results[0].toTime).format("LT")
-
         }
         res.json({
             data: correcteddata
@@ -138,16 +137,36 @@ router.get("/dailyvisits",loggedIn, (req, res) => {
 //     });
 
 // });
-router.post("/patienthistory", loggedIn, (req, res) => {
-    db.query('SELECT * FROM patienthistory WHERE patientId = ?', req.user.id, (err, results) => {
-        if (err) throw err;
-        return res.json({
-            medHistory: results
+function getNames(doctorId){
+    let names = []
+    return new Promise((resolve, reject) => {
+        db.query("SELECT firstName FROM doctors WHERE id = ?", [doctorId], (err, doctorName) => {
+            console.log(doctorName[0])
+            if (err) {
+                reject(err);
+            } else {
+                resolve(doctorName[0] && doctorName[0].firstName);
+                names.push(doctorName[0].firstName);
+            }
         });
-
     });
 
-});
+}
+router.post("/patienthistory", loggedIn, (req, res) => {
+
+    db.query('SELECT * FROM patienthistory WHERE patientId = ?', req.user.id, (err, results) => {
+        if (err) throw err;
+        res.json({
+            medHistory: results
+
+        })
+
+        
+        })
+
+
+    })
+
 router.get("/visithistory", loggedIn, (req, res) => {
     // [req.user.id]
     db.query('SELECT * FROM appointments WHERE patientId = ? AND ? > date', [1, new Date()], (err, results) => {
