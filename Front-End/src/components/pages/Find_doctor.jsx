@@ -1,41 +1,54 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export const Find_doctor = () => {
-  const doctors = [
-    {
-      image: "https://ibb.co/gr74djw",
-      id: 1,
-      name: "Dr. John Doe",
-      specialty: "Cardiologist",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida urna et pharetra aliquet.",
-    },
-    {
-      image: "https://example.com/doctor2.jpg",
-      id: 2,
-      name: "Dr. Jane Smith",
-      specialty: "Pediatrician",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida urna et pharetra aliquet.",
-    },
-    {
-      image: "https://example.com/doctor3.jpg",
-      id: 3,
-      name: "Dr. Michael Johnson",
-      specialty: "Dermatologist",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida urna et pharetra aliquet.",
-    },
-    {
-      image: "https://example.com/doctor4.jpg",
-      id: 4,
-      name: "Dr. Emily Williams",
-      specialty: "Neurologist",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida urna et pharetra aliquet.",
-    },
-  ];
+  const [doctors,setDoctors] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8000/findadoc")
+    .then(res => res.json())
+     .then(data => {
+      console.log(data.doctorsData)
+      setDoctors(data.doctorsData)
+    }
+      );
+    
+
+  },[])
+  // const doctors = [
+  //   {
+  //     image: "https://ibb.co/gr74djw",
+  //     id: 1,
+  //     name: "Dr. John Doe",
+  //     specialization: "Cardiologist",
+  //     description:
+  //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida urna et pharetra aliquet.",
+  //   },
+  //   {
+  //     image: "https://example.com/doctor2.jpg",
+  //     id: 2,
+  //     name: "Dr. Jane Smith",
+  //     specialization: "Pediatrician",
+  //     description:
+  //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida urna et pharetra aliquet.",
+  //   },
+  //   {
+  //     image: "https://example.com/doctor3.jpg",
+  //     id: 3,
+  //     name: "Dr. Michael Johnson",
+  //     specialization: "Dermatologist",
+  //     description:
+  //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida urna et pharetra aliquet.",
+  //   },
+  //   {
+  //     image: "https://example.com/doctor4.jpg",
+  //     id: 4,
+  //     name: "Dr. Emily Williams",
+  //     specialization: "Neurologist",
+  //     description:
+  //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed gravida urna et pharetra aliquet.",
+  //   },
+  // ];
 
   const handleGetAppointment = (doctorId) => {
     console.log(`Appointment booked with doctor ID: ${doctorId}`);
@@ -79,9 +92,9 @@ export const Find_doctor = () => {
                   className="w-full mb-4 rounded-md"
                 />
                 <h3 className="text-xl font-semibold mb-2">{doctor.name}</h3>
-                <p className="text-gray-700 mb-4">{doctor.specialty}</p>
+                <p className="text-gray-700 mb-4">{doctor.specialization}</p>
                 <p className="text-gray-800 mb-4">{doctor.description}</p>
-                <Link to="/Doctors">
+                <Link to={`/Doctors/${doctor.id}`}>
                   <button
                     onClick={() => handleGetAppointment(doctor.id)}
                     className="bg-blue-500 text-white py-2 px-4 p-5 rounded-md hover:bg-blue-600 transition duration-300 mr-2"

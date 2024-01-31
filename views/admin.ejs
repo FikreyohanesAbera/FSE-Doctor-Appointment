@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+
+</head>
+<body>
+    <h1>Admin page</h1>
+    <h2>Privilege Account Requests</h2>    
+    <%  for(var i = 0; i < docInfo.length; i++){ %>          
+        <div class="apply-div" style="background-color: cyan;">
+            <span> <%= docInfo[i].name%> </span>
+            <span><%= docInfo[i].specialization %></span>
+            <span><%= docInfo[i].phone%></span>
+            <button class="approve" value = "<%= docInfo[i].senderId %>" >Approve</button>
+            <button class="reject" value = "<%= docInfo[i].senderId %>">Reject</button>
+        </div>
+    <% } %> 
+    <h1>Lab Requests</h1>
+    <%  for(var i = 0; i < labInfo.length; i++){ %>          
+        <div class="lab-div" style="background-color: cyan;">
+            <span><%= labInfo[i].patientName%> </span>
+            <span id="docName"> <%= labInfo[i].doctorName%> </span>
+            <span><%= labInfo[i].description %></span>
+            <button onlick="" class="labapprove" value = "<%= labInfo[i].labreqId %>" >Approve</button>
+            <button class="labreject" value = "<%= labInfo[i].labreqId %>">Reject</button>
+        </div>
+    <% } %> 
+
+    <script>
+        console.log(document.getElementsByClassName('approve')[0].value);
+        let arr =  Array.from(document.getElementsByClassName('apply-div'));
+        let approveArr =  Array.from(document.getElementsByClassName('approve'));
+        let rejectArr =  Array.from(document.getElementsByClassName('reject'));
+
+
+        approveArr.forEach( elt => {
+            elt.addEventListener("click",async (e) => {
+                console.log("clicked" + e.target.value)
+                await fetch("/approveapply",{
+                    method: "POST",
+                    body: JSON.stringify({
+                        docUserId: e.target.value
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                      },
+                })
+                let parent = elt.parentElement;
+                elt.nextElementSibling.remove();
+                elt.remove();
+                let msg = document.createElement("h3");
+                let msgContent = document.createTextNode("approved");
+                msg.appendChild(msgContent);
+                parent.appendChild(msg);
+
+            })
+        });
+        rejectArr.forEach( elt => {
+            elt.addEventListener("click",(e) => {
+                fetch("/rejectapply",{
+                    method: "POST",
+                    body: JSON.stringify({
+                        docUserId: e.target.value
+                    })
+                })
+
+            })
+        });
+
+        console.log(document.getElementsByClassName('approve')[0].value);
+        let labarr =  Array.from(document.getElementsByClassName('lab-div'));
+        let approvelabArr =  Array.from(document.getElementsByClassName('labapprove'));
+        let rejectlabArr =  Array.from(document.getElementsByClassName('labreject'));
+
+
+        approvelabArr.forEach( elt => {
+            elt.addEventListener("click",async (e) => {
+                console.log("clicked" + e.target.value)
+                let doctorName = document.getElementById("docName").textContent;
+                await fetch("/labTechReq",{
+                    method: "POST",
+                    body: JSON.stringify({
+                        labreqId: e.target.value,
+                        docName: doctorName,
+
+
+                    }),
+                    headers: {
+                        "Content-Type": "application/json",
+                      },
+                })
+                let parent = elt.parentElement;
+                elt.nextElementSibling.remove();
+                elt.remove();
+                let msg = document.createElement("h3");
+                let msgContent = document.createTextNode("approved");
+                msg.appendChild(msgContent);
+                parent.appendChild(msg);
+
+            })
+        });
+        rejectArr.forEach( elt => {
+            elt.addEventListener("click",(e) => {
+                fetch("/rejectapply",{
+                    method: "POST",
+                    body: JSON.stringify({
+                        docUserId: e.target.value
+                    })
+                })
+
+            })
+        })
+
+
+
+
+    </script>
+
+
+</body>
+</html>

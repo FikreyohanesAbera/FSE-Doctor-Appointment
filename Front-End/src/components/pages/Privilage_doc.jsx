@@ -1,10 +1,49 @@
 import React from "react";
+import { useState } from "react";
+
 
 export const Privilage_doc = () => {
+  const [error,setError] = useState('')
+  const [clicked,setClick] = useState(false)
+
+
+  const [formData, setFormData] = useState({
+    name: '',
+    start: '',
+    end: '',
+  });
+  const handleChange = (e) => {
+
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add form submission logic here
+
+    console.log(JSON.stringify(formData))
+    fetch('http://localhost:8000/apply', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then(response => response.json())
+      .then(data => {
+        setClick(true);
+        if (data.status === "error"){
+          setError(data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   };
+
 
   return (
     <div
@@ -32,8 +71,9 @@ export const Privilage_doc = () => {
                 Full Name
               </label>
               <input
-                id="fullName"
-                name="fullName"
+                onChange={handleChange}
+                id="name"
+                name="name"
                 type="text"
                 required
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
@@ -41,20 +81,22 @@ export const Privilage_doc = () => {
               />
             </div>
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your email"
-              />
+              <div class="mb-3">
+                <label for="spec" class="form-label">Specialization</label>
+                <input className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                  onChange={handleChange} type="text" id="spec" name="spec" required placeholder = "Enter your specializations"/>
+              </div>
+              <div class="mb-3">
+                <label for="start" class="form-label">Start</label>
+                <input className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                  onChange={handleChange} type="time" id="start" name="start" required />
+              </div>
+              <div class="mb-3">
+                <label for="end" class="form-label">End</label>
+                <input className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                  onChange={handleChange} type="time" id="end" name="end" required />
+              </div>
+
             </div>
             <div>
               <label
@@ -64,6 +106,8 @@ export const Privilage_doc = () => {
                 Phone
               </label>
               <input
+                onChange={handleChange}
+
                 id="phone"
                 name="phone"
                 type="tel"
@@ -80,6 +124,8 @@ export const Privilage_doc = () => {
                 Password
               </label>
               <input
+                onChange={handleChange}
+
                 id="password"
                 name="password"
                 type="password"
@@ -96,6 +142,8 @@ export const Privilage_doc = () => {
                 Skills
               </label>
               <input
+                onChange={handleChange}
+
                 id="skills"
                 name="skills"
                 type="text"
@@ -106,12 +154,15 @@ export const Privilage_doc = () => {
             </div>
             <div>
               <label
+
                 htmlFor="experience"
                 className="block text-sm font-medium text-gray-700"
               >
                 Experience
               </label>
               <input
+                onChange={handleChange}
+
                 id="experience"
                 name="experience"
                 type="text"
@@ -128,6 +179,8 @@ export const Privilage_doc = () => {
                 Education Level
               </label>
               <input
+                onChange={handleChange}
+
                 id="educationLevel"
                 name="educationLevel"
                 type="text"
@@ -144,6 +197,8 @@ export const Privilage_doc = () => {
                 Available Location
               </label>
               <input
+                onChange={handleChange}
+
                 id="availableLocation"
                 name="availableLocation"
                 type="text"
@@ -160,6 +215,8 @@ export const Privilage_doc = () => {
                 Additional Bio
               </label>
               <textarea
+                onChange={handleChange}
+
                 id="additionalBio"
                 name="additionalBio"
                 required
@@ -184,6 +241,9 @@ export const Privilage_doc = () => {
             </a>
             .
           </div>
+          {/* to be styled */}
+          {(clicked) ? <div class="alert alert-success" role="alert" id="success">{(error) ? "Error": "Success"}</div>: null}
+          
         </div>
       </div>
     </div>
