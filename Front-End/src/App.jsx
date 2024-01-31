@@ -14,7 +14,12 @@ import { Doctors } from "./components/pages/doctors/Doctors";
 import { Patient_pro } from "./components/Patient_pro";
 import { Privilage_doc } from "./components/pages/privilage_doc";
 import {Admin} from "./components/pages/Admin"
-import {LabTechnician} from "./components/pages/LabTechnician"
+import {LabTechnician} from "./components/pages/LabTechnician";
+// import Admin from "./components/pages/Admin";
+// import PdfUploader from "./components/pages/PdfUploader";
+import {MedicalHistory} from "./components/pages/medicalhistory";
+import {VisitHistory} from "./components/pages/VisitHistory";
+import DoctorProfile from "./components/pages/doctors/DoctorProfile";
 const App = () => (
   <>
     <NavBar />
@@ -29,10 +34,17 @@ const App = () => (
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Admin" element={<Admin />} />
         <Route path="/LabTechnician" element={<LabTechnician />} />
-        <Route path="/Get_appointment" element={<Get_appointment />} />
-        <Route path="/Doctors" element={<Doctors />} />
+        {/* <Route path="/Get_appointment" element={<Get_appointment />} /> */}
+        {/* <Route path="/Doctors" element={<Doctors />} /> */}
         <Route path="/Privilage_doc" element={<Privilage_doc />} />
         <Route path="/Patient_pro" element={<Patient_pro />} />
+        <Route path="/Get_appointment/:id" element={<Get_appointment />} />
+        <Route path="/Doctors/:id" element={<Doctors />} />
+        {/* <Route path = "/admin" element = {<Admin/>}/>  */}
+        <Route path = "/doctorProfile" element = {<DoctorProfile/>}/> 
+        {/* <Route path = "/labtest" element = {<PdfUploader/>}/>  */}
+        <Route path = "/medicalhistory" element = {<MedicalHistory/>}/> 
+        <Route path = "/visithistory" element = {<VisitHistory/>}/> 
         
       </Routes>
     </main>

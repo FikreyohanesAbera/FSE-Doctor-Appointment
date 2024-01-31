@@ -2,7 +2,7 @@ const db = require('../routes/db-config');
 const bcrypt = require("bcryptjs");
 
 const createUser = async (User) => {
-  console.log(User, "creating User")
+  // console.log(User, "creating User")
 
   const { firstName, lastName, email, password, phone } = User;
   let hashedPassword = await bcrypt.hash(password, 8);
@@ -14,7 +14,7 @@ const createUser = async (User) => {
       const query = `SELECT * FROM Users WHERE email= ?`;
       db.query(query,[email], (err, result) => {
         if (err) reject(err);
-        console.log("result of createUser", result[0])
+        // console.log("result of createUser", result[0])
 
         resolve(result);
       });
@@ -44,7 +44,7 @@ const getUser = (id, role) => {
     const value = [id]
     db.query(query, value, async (err, result) => {
       if (err) reject(err);
-      console.log("getting User by id",table, id, result)
+      // console.log("getting User by id",table, id, result)
       if(result) resolve(result[0]);
       else resolve(null)       
 

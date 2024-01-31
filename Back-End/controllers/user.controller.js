@@ -39,18 +39,18 @@ router.put("/:id", async (req, res) => {
 // Get a patient account or all patient accounts
 router.post("/profile", async (req, res) => {
   try {
-    console.log("cookies", req.body.token, req.body.token.split("=")[1]);
+
     if (req.body.token) {
       const decoded = await jwt.verify(
         req.body.token.split("=")[1],
         process.env.JWT_SECRET
       );
-      console.log("hit get patient controller", decoded.id, decoded);
+      // console.log("hit get patient controller", decoded.id, decoded);
       const id = decoded.id;
       let result;
       if (id) {
         result = await userService.getUser(id, decoded.role);
-        console.log(result, "sent user");
+        // console.log(result, "sent user");
       }
       // else {
       //   result = await patientsService.getPatients();

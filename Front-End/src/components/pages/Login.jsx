@@ -39,6 +39,9 @@ export const Login = (props) => {
       } else if (user.role == "labtechnician"){
         navigate('/LabTechnician');
       }
+      else if (user.role == "doctor"){
+        navigate('/DoctorProfile');
+      }
       
     })
     .catch(error => {

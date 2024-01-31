@@ -7,7 +7,13 @@ const path = require("path");
 const app = express();
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const cors = require("cors");
-app.use(cors());
+
+const corsOptions ={
+  origin: ['http://localhost:3000','http://localhost:5173'], 
+  credentials:true,            
+  optionSuccessStatus:200,
+}
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json());
@@ -132,6 +138,12 @@ app.use("/users", userController);
 app.use("/doctors", doctorsController);
 app.use("/appointments", appointmentsController);
 app.use("/apply", applicationController);
+
+app.use("/",require("./routes/pages"));
+app.use("/",require("./controllers/book"));
+app.use("/",require("./controllers/lab"));
+app.use("/",require("./controllers/history"));
+
 
 app.listen(port, function () {
   console.log("app running on port 3001");

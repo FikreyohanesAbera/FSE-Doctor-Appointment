@@ -16,23 +16,28 @@ const createDoctor = async (doctor) => {
           console.log("the duplicate doctor", result);
           resolve(result[0]);
         } else {
-          db.query(
-            "INSERT INTO doctors SET ?",
-            {
-              firstName: user.firstName,
-              lastName: user.lastName,
-              fromTime: startTime,
-              toTime: endTime,
-              specialization: department,
-              phone: "09876543",
-              email: user.email,
-              password: user.password,
-            },
-            (err, result) => {
-              if (err) reject(err);
-              resolve(result);
-            }
-          );
+          db.query("SELECT id FROM users WHERE email = ?",user.email,(err,resultz) => {
+            db.query(
+              "INSERT INTO doctors SET ?",
+              {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                fromTime: startTime,
+                toTime: endTime,
+                specialization: department,
+                phone: "09876543",
+                email: user.email,
+                password: user.password,
+                userId: resultz[0].id
+              },
+              (err, result) => {
+                if (err) reject(err);
+                resolve(result);
+              }
+            );
+
+          })
+          
         }
       }
     );
