@@ -43,16 +43,18 @@ const verifySignUp = (email, password, passwordConfirm) => {
       [email],
       (err, results) => {
         if (err) reject(err);
-        if(results == undefined) resolve(true)
-        console.log(results,email, "are");
-        if (results.length > 0) {
+        if(!results) {
+          
+          console.log(results,email, "results undefined");
+          
+          resolve(true)
+        } else if (results.length > 0) {
           console.log("results, with same email", results);
           resolve(false);
         } else if (password != passwordConfirm) {
           console.log("different password", password, passwordConfirm);
           resolve(false);
-        } 
-          resolve(true);
+        } else resolve(true);
         
       }
     );

@@ -11,8 +11,11 @@ router.use(bodyParser.urlencoded({
     try {
       console.log("signup request", req.body)
       const patient = req.body;
-      const {email, password, passwordConfirm} = patient  
-      if (await authService.verifySignUp(email, password, passwordConfirm)){
+      const {email, password, passwordConfirm} = patient 
+      const verification = await authService.verifySignUp(email, password, passwordConfirm)
+      console.log("verify signup", verification) 
+      if (verification){
+        console.log("creating account")
         const { token, patient: savedPatient } = await authService.createAndSignIn(patient);
         const cookieOptions = {
           expires: new Date(

@@ -42,6 +42,7 @@ export const Get_appointment = () => {
     console.log(JSON.stringify(formData))
     let sentData = formData;
     sentData["token"] = document.cookie;
+    console.log("submitted appointment", sentData)
     
     fetch('http://localhost:3001/book', {
       method: 'POST',

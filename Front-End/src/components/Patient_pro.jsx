@@ -106,7 +106,7 @@ export const Patient_pro = () => {
             <Link to="/Privilage_doc">
               <div className="flex justify-center">
                 <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                  Apply for doctor
+                  Apply for privileged account
                 </button>
               </div>
             </Link>
@@ -114,7 +114,7 @@ export const Patient_pro = () => {
             <Link to="/visithistory">
               <div className="flex justify-center">
                 <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                  See visit History
+                  Visit History
                 </button>
               </div>
             </Link>
