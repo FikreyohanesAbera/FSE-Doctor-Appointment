@@ -187,9 +187,9 @@ export const Admin = () => {
             alt="Profile Picture"
             className="w-32 h-32 rounded-full"
           />
-          <h3 className="text-xl font-bold">Abebe</h3>
-          <p>Abebe@gmail.com</p>
-          <p>Phone: 0987654321</p>
+          <h3 className="text-xl font-bold">{firstName}</h3>
+          <p>{email}</p>
+          <p>Phone: {phone}</p>
         </div>
 
       </div>
