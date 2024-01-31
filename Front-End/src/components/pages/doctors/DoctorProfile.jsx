@@ -76,6 +76,7 @@ function DoctorProfile() {
         })
             .then(res => res.json())
             .then(response => {
+                console.log(response.data);
                 setData(response.data);
 
 
@@ -195,7 +196,6 @@ function DoctorProfile() {
                 />
                 <h3 className="text-xl font-bold">Name: {data.name}</h3>
                 <p>Email: {data.specialization}</p>
-                <p>Phone: {data.phone}</p>
                 <p>Starting time: {data.fromTime}</p>
                 <p>Finishing time: {data.toTime}</p>
 
