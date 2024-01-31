@@ -12,7 +12,7 @@ import { Contact } from "./components/pages/Contact";
 import { Get_appointment } from "./components/pages/Get_appointment";
 import { Doctors } from "./components/pages/doctors/Doctors";
 import { Patient_pro } from "./components/Patient_pro";
-import { Privilage_doc } from "./components/pages/Privilage_doc";
+import { Privilage_doc } from "./components/pages/privilage_doc";
 import {Admin} from "./components/pages/Admin"
 import {LabTechnician} from "./components/pages/LabTechnician";
 import Payment from "./components/pages/payment";
