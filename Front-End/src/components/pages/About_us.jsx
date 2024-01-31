@@ -10,12 +10,8 @@ export const About_us = () => {
       }}
     >
       <div className="relative">
-        <div className="mb-5  m-5 p-3 rounded">
-          <p className="text-3xl border-2  m-5 p-5 rounded my-7 "> About Us</p>
-        </div>
-
-        <div className="mb-5 m-5 p-2 rounded">
-          <p className="text-3xl   m-5 p-5 rounded my-7 "> About Us</p>
+      <div className="mb-5  m-5 p-3 rounded">
+          <p className="text-3xl border-2  m-2 p-5 rounded "> About Us</p>
         </div>
 
         <p className="text-center m-5 p-5 text-2xl">
@@ -23,7 +19,7 @@ export const About_us = () => {
         </p>
         <div>
           <div className="flex justify-center align-center p-3 m-5">
-            <img src={logo} className="border-4 rounded m-5 shadow-2xl " />
+            <img src={logo} className="border-4 rounded shadow-2xl w-[300px] h-[300px]" />
           </div>
 
           <div className="p-5 m-5 ">
