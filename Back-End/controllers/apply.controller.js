@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const applyService = require('../services/apply.service');
@@ -50,12 +51,37 @@ router.post('/', async (req, res) => {
           const result = await labtechnicianService.createLabTechnician(req.body)
           res.status(201).json(result);
           }
+      } else if (status == "declined"){
+        if(privilege == "doctor"){
+          console.log("dleting doctor")
+          const result = await doctorService.deleteDoctor(req.body)
+          res.status(200).json(result);
+        } else if (privilege =="labtechnician"){
+          console.log("deleting lab tech")
+          const result = await labtechnicianService.deleteLabTechnician(req.body)
+          res.status(200).json(result);
+          }
       }
       
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   });
+
+  router.get('/user',async (req, res) => {
+    try {
+      const decoded = await jwt.verify(req.cookies.token,
+      process.env.JWT_SECRET
+    );
+      console.log("getting user applications", req.cookies, decoded)
+      const applications = await applyService.getUserApplications(decoded.id)
+      console.log("user application requests",applications)
+      res.status(201).json(applications);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   router.get('/', async (req, res) => {
     try {
       const applications = await applyService.getApplications()

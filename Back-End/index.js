@@ -8,6 +8,7 @@ const app = express();
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const cors = require("cors");
 
+app.use(cookieParser());
 const corsOptions ={
   origin: ['http://localhost:3000','http://localhost:5173'], 
   credentials:true,            
@@ -15,7 +16,6 @@ const corsOptions ={
 }
 app.use(cors(corsOptions));
 
-app.use(cookieParser());
 app.use(express.json());
 
 const admins = [
@@ -99,6 +99,46 @@ db.connect((err) => {
           if (err) throw err;
         }
       );
+      db.query("CREATE TABLE IF NOT EXISTS checkups(checkupId INT AUTO_INCREMENT PRIMARY KEY, doctorId INT NOT NULL, patientEmail VARCHAR(100) NOT NULL, description text, date date NOT NULL)", (err, result) => {
+        if (err) throw err;
+      }
+    );
+    db.query(
+      `CREATE TABLE IF NOT EXISTS labrequest(labreqId INT AUTO_INCREMENT PRIMARY KEY,
+          userId INT NOT NULL,
+          doctorId INT NOT NULL,
+          adminId INT NOT NULL,
+          doctorName text,
+          labTechName text,
+          description VARCHAR(100) NOT NULL,
+          status ENUM('pending', 'declined', 'accepted') NOT NULL DEFAULT 'pending'
+          )`,
+      (err, result) => {
+        if (err) throw err;
+      }
+    );
+    db.query(
+      `CREATE TABLE IF NOT EXISTS labtest(id INT AUTO_INCREMENT PRIMARY KEY,
+          patientEmail VARCHAR(50),
+          doctorEmail VARCHAR(50),
+          filePath VARCHAR(255) NOT NULL
+           )`,
+      (err, result) => {
+        if (err) throw err;
+      }
+    );
+    db.query(
+      `CREATE TABLE IF NOT EXISTS patienthistory(id INT AUTO_INCREMENT PRIMARY KEY,
+          patientid INT(11),
+          doctorId INT(11),
+          reason text,
+          date VARCHAR(100) NOT NULL,
+          diagnosisResult text
+           )`,
+      (err, result) => {
+        if (err) throw err;
+      }
+    );
       db.query(
         "CREATE TABLE IF NOT EXISTS labtechnicians(id INT AUTO_INCREMENT PRIMARY KEY,firstName text,lastName text, phone varchar(100), department text, email varchar(100), password varchar(100))",
         (err, result) => {
@@ -137,7 +177,7 @@ app.use("/auth", authController);
 app.use("/users", userController);
 app.use("/doctors", doctorsController);
 app.use("/appointments", appointmentsController);
-app.use("/apply", applicationController);
+app.use("/application", applicationController);
 
 app.use("/",require("./routes/pages"));
 app.use("/",require("./controllers/book"));

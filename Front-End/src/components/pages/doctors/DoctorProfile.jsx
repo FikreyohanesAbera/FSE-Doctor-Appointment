@@ -32,23 +32,42 @@ function DoctorProfile() {
     };
     useEffect(() => {
         // mine
-        fetch("http://localhost:3001/doctorProfile", {
-            method: 'POST',
-            credentials: "include",
+        fetch(`http://localhost:3001/users/profile`, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                token: document.cookie
-
-            })
+            credentials: "include"
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("user profile",data);
+            // setEmail(data.email)
+            // setFirstname(data.firstName)
+            // setPhone(data.phone)
+            setData(data);
 
         })
-            .then(res => res.json())
-            .then(response => {
-                console.log(response);
-                setData(response.data);
-            })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+        // fetch("http://localhost:3001/doctorProfile", {
+        //     method: 'POST',
+        //     credentials: "include",
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         token: document.cookie
+
+        //     })
+
+        // })
+        //     .then(res => res.json())
+        //     .then(response => {
+        //         console.log(response);
+                
+        //     })
         // mine
 
         fetch("http://localhost:3001/dailyvisits", {
@@ -89,7 +108,10 @@ function DoctorProfile() {
             },
 
             body: JSON.stringify(sentData),
-        }).then(res => res.json())
+        }).then(res => {
+            if (res.ok) alert("successfully requested!")
+            return res.json()
+        })
             .then(data => {
                 console.log(data);
                 if (!data.status === "success") {

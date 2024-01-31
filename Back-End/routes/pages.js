@@ -4,24 +4,6 @@ const loggedIn = require("../controllers/loggedin");
 const db = require("./db-config");
 const moment = require("moment");
 
-// router.get('/apply', loggedIn, (req, res) => {
-//     db.query('SELECT * FROM doctorapply WHERE senderId = ?', [req.user.id], (err, results) => {
-//         console.log(results);
-//         if (results.length > 0) {
-//             res.render("apply", {
-//                 status: "pending"
-//             })
-//         }
-//         else {
-//             res.render("apply", {
-//                 status: ""
-//             });
-//         }
-
-//     });
-
-// })
-
 function getDoctorName(doctorId) {
     return new Promise((resolve, reject) => {
         db.query("SELECT name FROM doctors WHERE id = ?", [doctorId], (err, doctorName) => {
@@ -128,17 +110,8 @@ router.get("/dailyvisits",loggedIn, (req, res) => {
 })
 
 
-// router.get("/findadoc", (req, res) => {
-//     db.query('SELECT * FROM doctors ORDER BY id LIMIT 6', (err, results) => {
-//         if (err) throw err;
-//         res.json({
-//             doctorsData: results
-//         });
-
-//     });
-
-// });
 router.post("/patienthistory", loggedIn, (req, res) => {
+    console.log("post history")
     db.query('SELECT * FROM patienthistory WHERE patientId = ?', req.user.id, (err, results) => {
         if (err) throw err;
         return res.json({

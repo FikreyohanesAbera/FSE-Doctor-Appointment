@@ -37,30 +37,54 @@ router.put("/:id", async (req, res) => {
 });
 
 // Get a patient account or all patient accounts
-router.post("/profile", async (req, res) => {
-  try {
 
-    if (req.body.token) {
+
+  
+router.get("/profile", async (req, res) => {
+  try {
+    console.log("getting user profile. The cookies", req.cookies.token);
+    if (req.cookies.token) {
       const decoded = await jwt.verify(
-        req.body.token.split("=")[1],
+        req.cookies.token,
         process.env.JWT_SECRET
-      );
-      // console.log("hit get patient controller", decoded.id, decoded);
-      const id = decoded.id;
+      );  
+      console.log("This is user", decoded);
       let result;
-      if (id) {
-        result = await userService.getUser(id, decoded.role);
-        // console.log(result, "sent user");
+
+      if (decoded.id) {
+        result = await userService.getUser( decoded.id, decoded.role);
+        console.log("sent user", result);
       }
-      // else {
-      //   result = await patientsService.getPatients();
-      // }
       res.status(200).json(result);
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+// router.post("/profile", async (req, res) => {
+//   try {
+
+//     if (req.body.token) {
+//       const decoded = await jwt.verify(
+//         req.body.token.split("=")[1],
+//         process.env.JWT_SECRET
+//       );
+//       // console.log("hit get patient controller", decoded.id, decoded);
+//       const id = decoded.id;
+//       let result;
+//       if (id) {
+//         result = await userService.getUser(id, decoded.role);
+//         // console.log(result, "sent user");
+//       }
+//       // else {
+//       //   result = await patientsService.getPatients();
+//       // }
+//       res.status(200).json(result);
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
 // Delete a patient account
 router.delete("/:id", async (req, res) => {

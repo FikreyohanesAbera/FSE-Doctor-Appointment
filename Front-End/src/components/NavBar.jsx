@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
-import { useEffect, useRef } from "react";
-import { useNavigate} from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation} from "react-router-dom";
 import Cookies from 'js-cookie';
 
 const navLinks = [
@@ -27,19 +27,14 @@ export const NavBar = () => {
   const navigate = useNavigate();
   const headerRef = useRef(null);
   const menuRef = useRef(null);
+  const locate = useLocation()
+  const [currentPage, setCurrentPage] = useState('');
 
-  const handleStickyHeader = () => {
-    window.addEventListener("scroll", () => {
-      if (
-        document.body.scrollTop > 80 ||
-        document.documentElement.scrollTop > 80
-      ) {
-        headerRef.current.classList.add("sticky__header");
-      } else {
-        headerRef.current.classList.remove("sticky__header");
-      }
-    });
-  };
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    console.log(pathname)
+    setCurrentPage(pathname);
+  }, [locate]);
 
   const handleLogout = () => {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
@@ -47,10 +42,6 @@ export const NavBar = () => {
     navigate("/Home");
   }
 
-  useEffect(() => {
-    handleStickyHeader();
-    return () => window.removeEventListener("scroll", handleStickyHeader);
-  });
 
   const toggleMenu = () => {
     menuRef.current.classList.toggle("show__menu");
@@ -107,18 +98,20 @@ export const NavBar = () => {
                 </figure>
               </Link>
             </div>
-
-            <Link to="/Login " className="login">
-              <button className="bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
-                Login
-              </button>
-            </Link>
-            <button onClick={handleLogout} className="bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
+            {(currentPage !== '/'  && currentPage !== '/Home') &&   (
+              <button onClick={handleLogout} className="bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
                 Logout
               </button>
-            {/* <Link to="/Logout " className="login">
-              
-            </Link> */}
+            )}
+            {(currentPage === '/' || currentPage === '/Home') && (
+              <Link to="/Login" className="login">
+                <button className="bg-primaryColor py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
+                  Login
+                </button>
+              </Link>
+            )}
+            
+            
             <span className="md:hidden" onClick={toggleMenu}>
               <BiMenu className="w-6 h-6 cursor-pointer" />
             </span>

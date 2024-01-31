@@ -39,7 +39,19 @@ const db = require('../routes/db-config');
     })
   })
   }
-
+  const getUserApplications = (user) => {
+    return new Promise((resolve, reject) => {
+      console.log("user", user)
+    db.query('SELECT * FROM applications WHERE userId=?',[user], (err, result) => {
+      if (err) reject(err);
+      else{
+        console.log('the applications', result)
+      }
+      resolve(result);
+    })
+  })
+  }
+  
   const updateApplications = (id, status) =>{
     return new Promise((resolve, reject) => {
       db.query('UPDATE applications SET status = ? WHERE id = ?',[status, id], (err, result) => {
@@ -56,4 +68,5 @@ const db = require('../routes/db-config');
     createApplication,
     updateApplications,
     getApplications,
+    getUserApplications,
   }

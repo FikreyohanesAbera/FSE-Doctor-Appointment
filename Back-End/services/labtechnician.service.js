@@ -1,6 +1,5 @@
 const db = require("../routes/db-config");
 const patientsService = require("./user.service");
-
 const createLabTechnician = async (labtechnician) => {
   //   const {  start, end } = labtechnician;
   const labtech = await patientsService.getUser(
@@ -72,9 +71,19 @@ const getLabTechnicians = () => {
     });
   });
 };
+const deleteLabTechnician = (labtech) => {
+  return new Promise((resolve, reject) => {
+    const query = `DELETE FROM labtechnicians WHERE id=${labtech.id}`;
+    db.query(query, (err, result) => {
+      if (err) reject(err);
+      resolve(result);
+    });
+  });
+};
 
 module.exports = {
   createLabTechnician,
   getLabTechnician,
   getLabTechnicians,
+  deleteLabTechnician,
 };

@@ -1,11 +1,8 @@
-
-
-
 const express = require("express");
 const db = require('../routes/db-config');
 const bodyParser = require("body-parser");
 const loggedIn = require("./loggedin");
-
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({
@@ -16,20 +13,29 @@ router.use(bodyParser.urlencoded({
 router.post("/labrequest", loggedIn, (req, res) => {
     let userId;
     let docName;
-    console.log("uniqqqqqqqqqqq")
-    db.query('SELECT id FROM users WHERE email = ?', [req.body.email], (err, results) => {
+
+    console.log("in handler labrequest","labrequest", req.body, req.user)
+    db.query('SELECT id FROM users WHERE email = ?', [req.body.email], async  (err, results) => {
         if (err) throw err;
         else {
             userId = results[0].id;
-            db.query('SELECT firstName,lastName FROM doctors WHERE id  = ?', [req.user.id], (err, results) => {
+            if (req.cookies.token) {
+                    const decoded = await jwt.verify(
+                        req.cookies.token,
+                        process.env.JWT_SECRET
+                      );
+                      console.log("hit get patient controller", decoded.id, decoded);
+                      const id = decoded.id;
+                    
+            db.query('SELECT firstName,lastName FROM doctors WHERE id  = ?', [decoded.id], (err, results) => {
 
                 if (err) throw err;
                 else {
                     docName = results[0].firstName + results[0].lastName;
-                    db.query('INSERT INTO labrequest SET ?', { userId: userId, doctorId: req.user.id, description: req.body.desc, adminId: 8, doctorName: docName, status: "pending", labTechName: req.body.name }, (err, resultss) => {
+                    db.query('INSERT INTO labrequest SET ?', { userId: userId, doctorId: decoded.id, description: req.body.desc, adminId: 8, doctorName: docName, status: "pending", labTechName: req.body.name }, (err, resultss) => {
                         if (err) throw err;
                         else {
-                            res.json({
+                            res.status(200).json({
                                 status: "success",
                             })
 
@@ -42,6 +48,7 @@ router.post("/labrequest", loggedIn, (req, res) => {
 
                 }
             })
+        }
         }
     })
 

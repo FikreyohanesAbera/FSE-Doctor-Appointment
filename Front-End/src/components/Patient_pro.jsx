@@ -8,33 +8,48 @@ export const Patient_pro = () => {
   const [lastName, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [data, setData] = useState([]);
+
+  const fetchMyApplications = () => {
+    console.log("fetching user apps")
+    fetch("http://localhost:3001/application/user",{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: "include"
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("fetched", data);
+      setData(data)
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
   
   useEffect(() => {
-        const token= document.cookie;
-        fetch(`http://localhost:3001/users/profile`, {
-          method: 'POST',
-          credentials: "include",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            token
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          // Handle the fetched data
-          console.log(data);
-          setEmail(data.email)
-          setFirstname(data.firstName)
-          setPhone(data.phone)
-          // patientData = data
-        })
-        .catch((error) => {
-          // Handle any errors that occur
-          console.error('Error:', error);
-        });
+      fetch(`http://localhost:3001/users/profile`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include"
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("user profile",data);
+        setEmail(data.email)
+        setFirstname(data.firstName)
+        setPhone(data.phone)
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+        fetchMyApplications();
       }
+      
     , []); // Empty dependency array to run the effect only once when the component mounts
     const [reached, setReached] = useState(false);
     const [info, setInfo] = useState([]);
@@ -106,6 +121,18 @@ export const Patient_pro = () => {
           </div>
         </div>
       </div>
+      {data.map((application) => (
+              <div key={application.userId}
+              className="bg-white p-6 min-w-full rounded-md shadow-md"
+            >
+              <h3 className="text-xl font-semibold mb-2">User Id : {application.userId}</h3>
+              <p className="text-gray-700 mb-4">Department: {application.department}</p>
+              <p className="text-gray-800 mb-4">Status: {application.status}</p>
+              <p className="text-gray-800 mb-4">Privilege: {application.privilege}</p>
+              
+                
+            </div>
+            ))}
       {(reached) ?
         <div class="max-w-4xl mx-auto my-4">
 

@@ -10,110 +10,121 @@ export const Admin = () => {
   const [data, setData] = useState([]);
   const [approved, setApprove] = useState();
   const [declined, setDeclined] = useState();
+  const [changed, setChange] = useState();
+
 
   const handleApprove = (e, application) => {
     const updatedData = data.map((app) => {
-      if (app.userId === application.userId) {
-        setApprove(app)
-        console.log("approve", approved, app)
-        return { ...app, status: "accepted" };
-      } else {
-        return app;
-      }
-    });
-    setData(updatedData);
-    approved.status = "accepted"
-    postApplication(approved);
+        if (app.userId === application.userId) {
+            app.status = "accepted"
+            setChange(app)
+            // console.log("approve", approved, app)
+          return { ...app, status: "accepted" };
+        } else {
+          return app;
+        }
+      });
+      setData(updatedData);
+        }
 
+  const handleDecline = (e, application) => {
+    const updatedData = data.map((app) => {
+        if (app.userId === application.userId) {
+          app.status = "declined"
+          setChange(app)
+          console.log(changed, "changed")
+          return { ...app, status: "declined" };
+
+        } else {
+          return app;
+        }
+      });
+      
+      setData(updatedData);
+      declined.status = "declined"
+      console.log("declining")
+      
   }
+
   const postApplication = (app) => {
-
-    console.log("posting", app)
-    fetch('http://localhost:3001/apply/result', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(app)
-    }).then(response => {
-      if (!response.ok) {
-        throw new Error('Something went wrong with the sign-up request');
-      } else {
-        alert("yes")
-      }
-
-      return response.json();
-    }).then(data => {
-      console.log("submitted", data)
-    })
+    fetch('http://localhost:3001/application/result', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify(app)
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error('Something went wrong with the sign-up request');
+        } else {
+          alert("yes")
+        }
+  
+        return response.json();
+      }).then(data => {
+        console.log("submitted", data)   
+      })
       .catch(error => {
         console.error('Error during sign-up:', error);
       });
   }
 
-  const handleDecline = (e, application) => {
-    const updatedData = data.map((app) => {
-      if (app.userId === application.userId) {
-        setDeclined(app)
-        return { ...app, status: "declined" };
-
-      } else {
-        return app;
-      }
-    });
-    setData(updatedData);
-    declined.status = "declined"
-    postApplication(declined);
-  }
-
   const fetchApplicationRequests = () => {
-    fetch(`http://localhost:3001/apply`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
+    console.log("fetch applications", document.cookie.token)
+    fetch(`http://localhost:3001/application`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: "include"
+        })
+        .then((response)=> {
+          if(!response.ok){
+            alert("YOU DO NOT HAVE ACCESS!")
+          }
+          return response.json()
+
+        })
+        .then(data => {
+          console.log(data, "fetched");
+          setData(data)
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
       }
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        setData(data)
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  }
 
   useEffect(() => {
     console.log(data, "changed?")
+    if(changed){
+    postApplication(changed);
+    }
   }, [data])
   useEffect(() => {
-    const token = document.cookie;
-    fetch(`http://localhost:3001/users/profile`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        token
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the fetched data
-        console.log(data);
-        setEmail(data.email)
-        setFirstname(data.firstName)
-        setPhone(data.phone)
-        // patientData = data
-      })
-      .catch((error) => {
-        // Handle any errors that occur
-        console.error('Error:', error);
-      });
-    fetchApplicationRequests()
+        fetch(`http://localhost:3001/users/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: "include"
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("user profile",data);
+          setEmail(data.email)
+          setFirstname(data.firstName)
+          setPhone(data.phone)
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+        console.log("fetched")
+        fetchApplicationRequests()
+        
+      }
+    , []); 
 
-  }
-    , []); // Empty dependency array to run the effect only once when the component mounts
 
   const [docInfo, setDocInfo] = useState([]);
   const [labInfo, setLabInfo] = useState([]);
@@ -173,6 +184,16 @@ export const Admin = () => {
       })
   }
 
+
+
+
+
+
+
+
+
+
+
   return (
     <div className="min-h-screen grid items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full text-center m-auto space-y-8">
@@ -188,15 +209,17 @@ export const Admin = () => {
             className="w-32 h-32 rounded-full"
           />
           <h3 className="text-xl font-bold">{firstName}</h3>
-          <p>{email}</p>
+          <p>Email: {email}</p>
           <p>Phone: {phone}</p>
         </div>
+
+          
 
       </div>
       <h1 className="my-5 text-center text-3xl font-bold text-gray-800">Staff Application Requests</h1>
 
       <div className="flex gap-5 flex-wrap">
-        {data.map((application) => (
+      {data.map((application) => (
           <div
             key={application.userid}
             className="bg-white p-6 min-w-full rounded-md shadow-md"
@@ -204,22 +227,22 @@ export const Admin = () => {
             <h3 className="text-xl font-semibold mb-2">User Id : {application.userId}</h3>
             <p className="text-gray-700 mb-4">Department: {application.department}</p>
             <p className="text-gray-800 mb-4">Status: {application.status}</p>
-
-            <button
-              onClick={(e) => handleApprove(e, application)}
-              className="bg-blue-500 text-white py-2 px-4 p-5 rounded-md hover:bg-blue-600 transition duration-300 mr-2"
-            >
-              Approve
-            </button>
-            <button
-              onClick={(e) => handleDecline(e, application)}
-              className="bg-blue-500 text-white py-2 px-4 p-5 rounded-md hover:bg-blue-600 transition duration-300 mr-2"
-            >
-              Decline
-            </button>
+            <p className="text-gray-800 mb-4">Privilege: {application.privilege}</p>
+            
+              <button
+                onClick={(e) => handleApprove(e, application)}
+                className="bg-blue-500 text-white py-2 px-4 p-5 rounded-md hover:bg-blue-600 transition duration-300 mr-2"
+              >
+                Approve
+              </button>
+              <button
+                onClick={(e) => handleDecline(e, application)}
+                className="bg-blue-500 text-white py-2 px-4 p-5 rounded-md hover:bg-blue-600 transition duration-300 mr-2"
+              >
+                Decline
+              </button>
           </div>
-        ))}
-
+            ))}
       </div>
       <h1 className="mt-5 text-center text-3xl font-bold text-gray-800">Lab Requests</h1>
       <div className="flex gap-5 flex-wrap">

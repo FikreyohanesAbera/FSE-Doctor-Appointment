@@ -1,10 +1,11 @@
 const db = require("../routes/db-config");
 const jwt = require("jsonwebtoken");
 const loggedIn = async (req,res,next) => {
-    if (req.body.token) {
+    console.log("In logged in") 
+    if (req.cookies.token) {
         try {
             const decoded = await jwt.verify(
-                req.body.token.split("=")[1],
+                req.cookies.token,
                 process.env.JWT_SECRET
               );
               console.log("hit get patient controller", decoded.id, decoded);

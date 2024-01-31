@@ -28,15 +28,14 @@ const verifyLogin = (role, email, password) => {
         ) {
           resolve(false);
         } else {
-          if (table === "users")
-            resolve({ id: results[0].id, role: role });
-          else resolve({ id: results[0].id, role: role });
+          resolve({ id: results[0].id, role: role });
         }
       }
       resolve(false);
     });
   });
 };
+
 const verifySignUp = (email, password, passwordConfirm) => {
   return new Promise((resolve, reject) => {
     db.query(
@@ -44,6 +43,7 @@ const verifySignUp = (email, password, passwordConfirm) => {
       [email],
       (err, results) => {
         if (err) reject(err);
+        if(results == undefined) resolve(true)
         console.log(results,email, "are");
         if (results.length > 0) {
           console.log("results, with same email", results);
