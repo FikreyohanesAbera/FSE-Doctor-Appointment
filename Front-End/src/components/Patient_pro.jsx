@@ -8,7 +8,8 @@ export const Patient_pro = () => {
   const [lastName, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [filename,setFileName] = useState('');
+  const [filename, setFileName] = useState('');
+  const [isempty, setIsEmpty] = useState(true);
 
   useEffect(() => {
     const token = document.cookie;
@@ -25,7 +26,6 @@ export const Patient_pro = () => {
       .then(response => response.json())
       .then(data => {
         // Handle the fetched data
-        console.log(data);
         setEmail(data.email)
         setFirstname(data.firstName)
         setPhone(data.phone)
@@ -58,7 +58,7 @@ export const Patient_pro = () => {
         setReached(true);
       })
   }, [])
-  useEffect(()=>{
+  useEffect(() => {
     const token = document.cookie;
     fetch("http://localhost:3001/labresult", {
       method: 'POST',
@@ -72,13 +72,13 @@ export const Patient_pro = () => {
       .then(res => res.json())
       .then(response => {
         setFileName(response.filePath);
+        setIsEmpty(false);
       })
 
-  },[])
-    const handleDownload = () => {
-      console.log(filename);
-      window.open(`http://localhost:3001/download/${filename}`, '_blank');
-    };
+  }, [])
+  const handleDownload = () => {
+    window.open(`http://localhost:3001/download/${filename}`, '_blank');
+  };
 
   return (
     <div>
@@ -155,9 +155,16 @@ export const Patient_pro = () => {
               ))}
             </tbody>
           </table>
-          <button className="bg-blue-500 my-6 m-auto text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onClick={handleDownload}>
-            Download File
-          </button>
+          {(!isempty) ?
+            <div className="text-center mt-5">
+              <h2 className="text-center text-3xl font-bold text-gray-800">LabResults</h2>
+              <button className="bg-blue-500 my-3 m-auto text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onClick={handleDownload}>
+                Download File
+              </button> </div> : null}
+
+
+
+
           {/* <DownloadButton filename="1706701040292.pdf" /> */}
         </div>
 

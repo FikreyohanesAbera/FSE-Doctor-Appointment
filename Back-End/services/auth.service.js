@@ -20,7 +20,6 @@ const verifyLogin = (role, email, password) => {
   return new Promise((resolve, reject) => {
     db.query(query, value, async (err, results) => {
       if (err) reject(err);
-      console.log("db", table, results);
       if (results != undefined && results.length >= 1) {
         if (
           !results ||
@@ -44,12 +43,9 @@ const verifySignUp = (email, password, passwordConfirm) => {
       [email],
       (err, results) => {
         if (err) reject(err);
-        console.log(results,email, "are");
         if (results.length > 0) {
-          console.log("results, with same email", results);
           resolve(false);
         } else if (password != passwordConfirm) {
-          console.log("different password", password, passwordConfirm);
           resolve(false);
         } 
           resolve(true);
@@ -60,11 +56,8 @@ const verifySignUp = (email, password, passwordConfirm) => {
 };
 
 const createAndSignIn = async (userAccount) => {
-  console.log("creating user cookie", userAccount);
   const savedUser = await userService.createUser(userAccount);
-  console.log("saved user", savedUser)
   const token = createToken({ user: userAccount.firstName, id: savedUser[0].id, role: "user" });
-  console.log("created", savedUser, token);
   return { token, user: savedUser };
 };
 

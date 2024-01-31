@@ -47,7 +47,6 @@ function DoctorProfile() {
         })
             .then(res => res.json())
             .then(response => {
-                console.log(response);
                 setData(response.data);
 
 
@@ -70,7 +69,6 @@ function DoctorProfile() {
         })
             .then(res => res.json())
             .then(response => {
-                console.log(response.dailyApps);
                 let arr = response.dailyApps;
 
                 arr.map(info => {
@@ -78,7 +76,6 @@ function DoctorProfile() {
                     const hours = date.getHours();
                     const minutes = date.getMinutes();
                     info.time = `${hours}:${minutes}`;
-                    console.log(info)
                 })
                 setVisits(arr);
             })
@@ -90,10 +87,8 @@ function DoctorProfile() {
 
 
         let sentData = formData;
-        console.log(sentData)
 
         sentData["token"] = document.cookie;
-        console.log(sentData)
         fetch("http://localhost:3001/labrequest", {
             method: 'POST',
             credentials: "include",
@@ -105,7 +100,6 @@ function DoctorProfile() {
             body: JSON.stringify(sentData),
         }).then(res => res.json())
             .then(data => {
-                console.log(data);
                 if (!data.status === "success") {
                     setError("request unsuccessful");
                     alert("Something went wrong")
@@ -135,7 +129,6 @@ function DoctorProfile() {
             body: JSON.stringify(sentData),
         }).then(res => res.json())
             .then(data => {
-                console.log(data);
                 if (data.status === "error") {
                     setError("request unsuccessful");
                     alert("Something went wrong")

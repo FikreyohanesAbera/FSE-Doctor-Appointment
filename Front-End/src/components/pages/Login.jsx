@@ -28,7 +28,6 @@ export const Login = (props) => {
 
       return response.json();
     }).then(data => {
-      console.log('login data:', data);
       const token = data.token;
       const payload = JSON.parse(atob(token.split('.')[1]));
       document.cookie = `token=${token}; expires=${new Date(Date.now() + 3600000)}; path=/`;
@@ -85,6 +84,7 @@ export const Login = (props) => {
                 id="password"
                 name="password"
                 placeholder="Your Password"
+                min="6"
                 className="w-full border border-gray-300 rounded-md py-2 px-3 text-gray-800 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onChange={(event) => setPassword(event.target.value)}
               />

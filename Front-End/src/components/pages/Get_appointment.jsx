@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export const Get_appointment = () => {
 
@@ -20,6 +21,7 @@ export const Get_appointment = () => {
   const day = currentDate.getDate();
   const month = currentDate.getMonth() + 1;
   const year = currentDate.getFullYear();
+  const navigate = useNavigate();
 
   const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
 
@@ -57,8 +59,11 @@ export const Get_appointment = () => {
         if (data.customCode === 12) {
           setSubmitStatus('error');
 
+
         }
         else{
+          navigate('/payment');
+
           setSubmitStatus("success");
         }
       })
