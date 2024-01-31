@@ -49,8 +49,12 @@ function DoctorProfile() {
             .then(response => {
                 console.log(response);
                 setData(response.data);
+
+
+
             })
-        // mine
+
+
 
         fetch("http://localhost:3001/dailyvisits", {
             method: 'POST',
@@ -66,8 +70,17 @@ function DoctorProfile() {
         })
             .then(res => res.json())
             .then(response => {
-                console.log(response.dailyApps)
-                setVisits(response.dailyApps);
+                console.log(response.dailyApps);
+                let arr = response.dailyApps;
+
+                arr.map(info => {
+                    const date = new Date(info.time);
+                    const hours = date.getHours();
+                    const minutes = date.getMinutes();
+                    info.time = `${hours}:${minutes}`;
+                    console.log(info)
+                })
+                setVisits(arr);
             })
 
     }, [])
@@ -144,36 +157,7 @@ function DoctorProfile() {
         <div className="min-h-screen flex flex-col items-center justify-center bg-cover" style={{
             backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
         }}>
-            {/* dailyvisits */}
-            <div className="max-w-4xl mx-auto my-4">
-                <table class="min-w-full bg-white border border-gray-300">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Patient Id</th>
-                            <th class="py-2 px-4 border-b">Time</th>
-                            <th class="py-2 px-4 border-b">Reason</th>
 
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {visits.map((element) => (
-
-                            <tr>
-                                <td class="py-2 px-4 border-b">{element.patientid}</td>
-                                <td class="py-2 px-4 border-b">{element.time}</td>
-                                <td class="py-2 px-4 border-b">{element.reason}</td>
-
-                            </tr>
-
-
-                        ))}
-                    </tbody>
-                </table>
-
-            </div>
 
 
             <div>
@@ -193,6 +177,42 @@ function DoctorProfile() {
                 <p>Starting time: {data.fromTime}</p>
                 <p>Finishing time: {data.toTime}</p>
 
+
+            </div>
+
+            {/* dailyvisits */}
+            <h2 className="text-center mt-8 text-3xl font-bold text-gray-800">
+                Today's Visits
+            </h2>
+
+            <div className="max-w-4xl mx-auto my-4">
+                <table class="min-w-full bg-white border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b">Patient Name</th>
+                            <th class="py-2 px-4 border-b">Time</th>
+                            {/* <th class="py-2 px-4 border-b">Reason</th> */}
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {visits.map((element) => (
+
+
+                            <tr>
+                                <td class="py-2 px-4 border-b">{element.patientName}</td>
+                                <td class="py-2 px-4 border-b">{element.time}</td>
+                                {/* <td class="py-2 px-4 border-b">{element.reason}</td> */}
+
+                            </tr>
+
+
+                        ))}
+                    </tbody>
+                </table>
 
             </div>
 

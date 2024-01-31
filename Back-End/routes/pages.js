@@ -25,7 +25,7 @@ const moment = require("moment");
 function getDoctorName(doctorId) {
     return new Promise((resolve, reject) => {
         db.query("SELECT firstName FROM doctors WHERE id = ?", [doctorId], (err, doctorName) => {
-            console.log(doctorName[0])
+            // console.log(doctorName[0])
             if (err) {
                 reject(err);
             } else {
@@ -86,11 +86,11 @@ router.post("/patient", loggedIn, (req, res) => {
 
 })
 router.post("/doctorProfile", loggedIn, (req, res) => {
-    console.log(req.user.id);
+    // console.log(req.user.id);
 
     db.query('SELECT * FROM doctors WHERE userId = ?', [req.user.id], (err, results) => {
         if (err) throw err;
-        console.log(results)
+        // console.log(results)
         const correcteddata = {
             name: results[0].firstName + results[0].lastName,
             specialization: results[0].specialization,
@@ -104,28 +104,61 @@ router.post("/doctorProfile", loggedIn, (req, res) => {
     });
 
 });
-router.get("/dailyvisits",loggedIn, (req, res) => {
+
+router.post("/dailyvisits", loggedIn, (req, res) => {
     let arr = [];
-    db.query("SELECT * FROM appointments WHERE doctorId = ?", req.user.id, (err, results) => {
-        if (err) throw err;
-
-
+  
+    db.query("SELECT id FROM doctors WHERE userId = ?", req.user.id, (err, results1) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ status: "error", message: "Internal Server Error" });
+      }
+  
+      db.query("SELECT * FROM appointments WHERE doctorId = ?", results1[0].id, (err, results) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ status: "error", message: "Internal Server Error" });
+        }
+  
         results.forEach(appoint => {
-            console.log(new Date(appoint.date).toDateString(), new Date().toDateString())
-            console.log(new Date(appoint.date).toDateString() === new Date().toDateString())
-            if (new Date(appoint.date).toDateString() === new Date().toDateString()) {
-                arr.push(appoint);
-            }
-        })
-        return res.json({
-            status: "success",
-            dailyApps: arr
-        })
-
-    })
-
-})
-
+          if (new Date(appoint.date).toDateString() === new Date().toDateString()) {
+            arr.push(appoint);
+          }
+        });
+  
+        processArray(arr)
+          .then(() => {
+            console.log(arr);
+  
+            return res.json({
+              status: "success",
+              dailyApps: arr
+            });
+          })
+          .catch(error => {
+            console.error(error);
+            return res.status(500).json({ status: "error", message: "Internal Server Error" });
+          });
+      });
+    });
+  });
+  
+  const processArray = (arr) => {
+    const promises = arr.map(elt => {
+      return new Promise((resolve, reject) => {
+        db.query("SELECT firstName FROM users WHERE id = ?", elt.patientid, (err, results3) => {
+          if (err) {
+            reject(err);
+          } else {
+            elt.patientName = results3[0].firstName;
+            resolve();
+          }
+        });
+      });
+    });
+  
+    return Promise.all(promises);
+  };
 
 // router.get("/findadoc", (req, res) => {
 //     db.query('SELECT * FROM doctors ORDER BY id LIMIT 6', (err, results) => {
@@ -137,21 +170,7 @@ router.get("/dailyvisits",loggedIn, (req, res) => {
 //     });
 
 // });
-function getNames(doctorId){
-    let names = []
-    return new Promise((resolve, reject) => {
-        db.query("SELECT firstName FROM doctors WHERE id = ?", [doctorId], (err, doctorName) => {
-            console.log(doctorName[0])
-            if (err) {
-                reject(err);
-            } else {
-                resolve(doctorName[0] && doctorName[0].firstName);
-                names.push(doctorName[0].firstName);
-            }
-        });
-    });
 
-}
 router.post("/patienthistory", loggedIn, (req, res) => {
 
     db.query('SELECT * FROM patienthistory WHERE patientId = ?', req.user.id, (err, results) => {
