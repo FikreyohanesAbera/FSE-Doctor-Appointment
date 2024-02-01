@@ -141,8 +141,9 @@ function DoctorProfile() {
                 console.log(data);
                 if (data.status === "error") {
                     setError("request unsuccessful");
-
-                }
+                    alert("Something went wrong!")
+                } else alert("History Successful!")
+                
                 // else{
 
                 // }
@@ -178,7 +179,7 @@ function DoctorProfile() {
 
             </div>
             {/* dailyvisits */}
-            <div className="max-w-4xl mx-auto my-4">
+            <div className="max-w-4xl mx-auto my-4 w-lvw">
                 <table class="min-w-full bg-white border border-gray-300">
                     <thead>
                         <tr>
@@ -210,7 +211,7 @@ function DoctorProfile() {
 
 
             <div
-                className="min-h-screen flex flex-col items-center justify-center bg-cover"
+                className=" min-h-screen flex flex-col items-center justify-center bg-cover"
                 style={{
                     backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
                 }}
@@ -293,7 +294,7 @@ function DoctorProfile() {
                 </div>
                 <div>
                     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 mt-4 mb-4">
-                        <div className="max-w-md w-full space-y-8">
+                        <div className="w-full space-y-8">
                             <div>
                                 <h2 className="text-center text-3xl font-bold text-gray-800">
                                     Set Medical History

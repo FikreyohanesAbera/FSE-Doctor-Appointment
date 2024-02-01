@@ -10,8 +10,10 @@ export const Patient_pro = () => {
   const [phone, setPhone] = useState('');
   const [data, setData] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [filename, setFileName] = useState(''); 
+  const [isempty, setIsEmpty] = useState(true); 
 
-
+ 
   const fetchMyAppointments = () => {
     console.log("fetching user appointments")
     fetch("http://localhost:3001/appointments/user",{
@@ -88,6 +90,7 @@ export const Patient_pro = () => {
 
       fetch("http://localhost:3001/patient", {
         method: 'POST',
+        credentials:"include",
         body: JSON.stringify({
           token: token
         }),
@@ -102,7 +105,34 @@ export const Patient_pro = () => {
           setReached(true);
         })
     }, [])
-
+    useEffect(() => { 
+      const token = document.cookie; 
+      fetch("http://localhost:3001/labresult", { 
+        method: 'POST', 
+        credentials:"include",
+        body: JSON.stringify({ 
+          token: token 
+        }), 
+        headers: { 
+          'Content-Type': 'application/json', 
+        }, 
+      }) 
+        .then(res => res.json()) 
+        .then(response => { 
+          if (response.filePath) { 
+            setFileName(response.filePath); 
+            setIsEmpty(false); 
+   
+          } 
+   
+        }) 
+   
+    }, []) 
+    // uploads\1706798673081.pdf
+    const handleDownload = () => { 
+      console.log(filename)
+      window.open(`http://localhost:3001/download/${filename}`, '_blank'); 
+    }; 
   return (
     <div>
       <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -140,17 +170,13 @@ export const Patient_pro = () => {
               </div>
             </Link>
 
-            <Link to="/visithistory">
-              <div className="flex justify-center">
-                <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                  Visit History
-                </button>
-              </div>
-            </Link>
+            
           </div>
         </div>
       </div>
-      {data.map((application) => (
+      <div className="p-5 bg-slate-400  mb-5  m-5">
+        <h2 className="text-center text-3xl">My Applications</h2>
+        {data.map((application) => (
               <div key={application.userId}
               className="bg-white p-6 min-w-full rounded-md shadow-md"
             >
@@ -162,6 +188,7 @@ export const Patient_pro = () => {
                 
             </div>
             ))}
+        </div>
 
           <div className="p-5 bg-blue-400  m-5">
             <h2 className="text-center text-3xl">My Appointments</h2>
@@ -206,13 +233,23 @@ export const Patient_pro = () => {
               ))}
             </tbody>
           </table>
-        </div>
 
-        : null}
-
-      {/* <div className="App"> <h2>Checkup Recommendations</h2><span> {info.checkup.docName}  </span><h3> {info.checkup.data.description}  </h3><h3> {info.checkup.data.date}  </h3></div> : null} */}
-
-    </div>
-    
-  );
+          {(!isempty) ? 
+            <div className="text-center mt-5"> 
+              <h2 className="text-center text-3xl font-bold text-gray-800">LabResults</h2> 
+              <button className="bg-blue-500 my-3 m-auto text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onClick={handleDownload}> 
+                Download File 
+              </button> </div> : null} 
+        </div> 
+ 
+        : null} 
+ 
+      {/* <div className="App"> <h2>Checkup Recommendations</h2><span> {info.checkup.docName}  </span><h3> {info.checkup.data.description}  </h3><h3> {info.checkup.data.date}  </h3></div> : null} */} 
+ 
+    </div> 
+ 
+  ); 
 };
+
+
+

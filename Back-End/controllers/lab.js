@@ -3,6 +3,8 @@ const db = require('../routes/db-config');
 const bodyParser = require("body-parser");
 const loggedIn = require("./loggedin");
 const jwt = require("jsonwebtoken");
+const multer = require('multer')
+const path = require('path')
 
 const router = express.Router();
 router.use(bodyParser.urlencoded({
@@ -87,21 +89,74 @@ router.post("/checkup",loggedIn,(req,res) => {
     }
         )
 })
-router.post('/labtest', (req, res) => {
-    const { fileName, description } = req.body;
-  
-    // Insert data into MySQL
-    const sql = 'INSERT INTO your_table_name (fileName, description) VALUES (?, ?)';
-    db.query(sql, [fileName, description], (err, result) => {
-      if (err) {
-        console.error('Error inserting data into MySQL:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        console.log('Data inserted into MySQL:', result);
-        res.status(200).json({ message: 'Form submitted successfully' });
-      }
+
+
+router.post("/labresult",loggedIn,(req,res) => { 
+    console.log("in/labresult")
+    db.query("SELECT email FROM users WHERE id = ?",req.user.id,(err,results) => { 
+        db.query("SELECT filepath FROM labtest WHERE patientEmail = ?",results[0].email,(error,resultz) => { 
+            if (error) throw error; 
+            if (resultz.length > 0){ 
+                return res.json({ 
+                    filePath: resultz[0].filepath 
+                }) 
+ 
+            } 
+            else{ 
+                return res.json({ 
+                    filePath: '' 
+                }) 
+            } 
+        }) 
+ 
+    }) 
+     
+});
+
+  const storage = multer.diskStorage({ 
+    destination: (req, file, cb) => { 
+      const uploadDir = path.join(__dirname, '../../uploads'); 
+      cb(null, uploadDir); 
+    }, 
+    filename: (req, file, cb) => { 
+      const ext = path.extname(file.originalname); 
+      cb(null, `${Date.now()}${ext}`); 
+    }, 
+  }); 
+   
+  const upload = multer({ storage: storage }); 
+  router.post('/labtest', upload.single('file'), (req, res) => { 
+    console.log("In /labtest")
+      if (!req.file) { 
+        return res.status(400).json({ error: 'No file uploaded' }); 
+      } 
+     
+      const { patientEmail, doctorName } = req.body; 
+      const filePath = req.file.path; 
+     
+      const insertQuery = 'INSERT INTO labtest (patientEmail, doctorEmail, filepath) VALUES (?, ?, ?)'; 
+      const values = [patientEmail, doctorName, filePath]; 
+     
+      db.query(insertQuery, values, (err, results) => { 
+        if (err) { 
+          console.error('Error inserting data into database:', err); 
+          return res.status(500).json({ error: 'Internal Server Error' }); 
+        } 
+     
+        return res.status(201).json({ message: 'File uploaded and data stored successfully' }); 
+      }); 
     });
-  });
+
+    router.get('/download/:filename', (req, res) => { 
+        console.log("in /download" )
+
+        const filename = req.params.filename; 
+        console.log(filename)
+        res.setHeader('Content-Disposition', `attachment; filename=${filename}`); 
+        res.setHeader('Content-Type', 'application/pdf');  
+       
+      });
+    
 module.exports = router;
 
 

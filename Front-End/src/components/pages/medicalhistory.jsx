@@ -29,7 +29,6 @@ export const MedicalHistory = () => {
                     <table class="min-w-full bg-white border border-gray-300">
                         <thead>
                             <tr>
-                                <th class="py-2 px-4 border-b">Doctor Name</th>
                                 <th class="py-2 px-4 border-b">Description</th>
                                 <th class="py-2 px-4 border-b">Date</th>
                                 <th class="py-2 px-4 border-b">Diagnosis Result</th>
@@ -43,8 +42,7 @@ export const MedicalHistory = () => {
                             {medicalHistory.map((element) => (
 
                                 <tr>
-                                    <td class="py-2 px-4 border-b">{element.doctorName}</td>
-                                    <td class="py-2 px-4 border-b">{element.reason}</td>
+                                   <td class="py-2 px-4 border-b">{element.reason}</td>
                                     <td class="py-2 px-4 border-b">{element.date}</td>
                                     <td class="py-2 px-4 border-b">{element.diagnosisResult}</td>
 
