@@ -9,10 +9,10 @@ export const Home = () => {
     <div>
       <div
         className="min-h-screen flex items-center  bg-cover"
-        style={{
-          backgroundImage:
-            "url('https://source.unsplash.com/1600x900/?medical')",
-        }}
+        // style={{
+        //   backgroundImage:
+        //     "url('https://source.unsplash.com/1600x900/?medical')",
+        // }}
       >
         <div className="text-white lg:inline-flex">
           <div className="inline-flex justifiy-end max-w-[1240px]">
@@ -64,10 +64,10 @@ export const Home = () => {
         </div>
       </div>
       <div
-        className="min-h-screen flex items-center  bg-cover"
+        className="min-h-screen flex items-center  bg-cover .body"
         style={{
-          backgroundImage:
-            "url('https://source.unsplash.com/1600x900/?medical')",
+          
+         
         }}
       >
         <div className="w-full py-[10rem] px-4 text-white">

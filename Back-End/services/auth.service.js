@@ -37,29 +37,35 @@ const verifyLogin = (role, email, password) => {
 };
 
 const verifySignUp = (email, password, passwordConfirm) => {
+  console.log("email", email)
   return new Promise((resolve, reject) => {
     db.query(
-      "SELECT email from users WHERE email = ?",
+      "SELECT * from users WHERE email = ?",
       [email],
       (err, results) => {
-        if (err) reject(err);
-        if(!results) {
-          
-          console.log(results,email, "results undefined");
-          
-          resolve(true)
-        } else if (results.length > 0) {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        if (!results || results.length === 0) {
+          // No user found with the provided email
+          if (password !== passwordConfirm) {
+            console.log("different password", password, passwordConfirm);
+            resolve(false); // Passwords don't match
+          } else {
+            resolve(true); // No existing user with the provided email and passwords match
+          }
+        } else {
+          // User with the same email already exists
           console.log("results, with same email", results);
           resolve(false);
-        } else if (password != passwordConfirm) {
-          console.log("different password", password, passwordConfirm);
-          resolve(false);
-        } else resolve(true);
-        
+        }
       }
     );
   });
 };
+
 
 const createAndSignIn = async (userAccount) => {
   console.log("creating user cookie", userAccount);

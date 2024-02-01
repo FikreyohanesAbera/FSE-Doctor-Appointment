@@ -52,6 +52,17 @@ const getAppointments = async (id) => {
   const query = `SELECT appointments.* , doctors.firstName AS doctor
   FROM appointments 
   JOIN doctors ON appointments.doctorid = doctors.id
+  WHERE appointments.appointmentid = ?;`
+  const query2 = 'SELECT firstName from doctors WHERE id = ?';
+  const results = await executeQuery(query, [id]);
+  console.log("get apps", id, results.length)
+  return results;
+};
+const getAllAppointments = async (id) => {
+  
+  const query = `SELECT appointments.* , doctors.firstName AS doctor
+  FROM appointments 
+  JOIN doctors ON appointments.doctorid = doctors.id
   WHERE appointments.patientid = ?;`
   const query2 = 'SELECT firstName from doctors WHERE id = ?';
   const results = await executeQuery(query, [id]);
@@ -144,7 +155,7 @@ const deleteAppointment = (id) => {
 };
 
 module.exports = {
-
+  getAllAppointments,
   bookAppointment,
   getAppointmentsByDoctorId,
   getAppointmentsByPatientId,

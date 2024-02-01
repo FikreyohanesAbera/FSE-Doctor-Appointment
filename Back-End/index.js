@@ -153,7 +153,7 @@ db.connect((err) => {
       );
       
       db.query(
-        "CREATE TABLE IF NOT EXISTS appointments (appointmentid INT AUTO_INCREMENT PRIMARY KEY, doctorid INT, patientid INT, time VARCHAR(100), date VARCHAR(100), paid TINYINT NOT NULL DEFAULT 0, FOREIGN KEY (doctorid) REFERENCES doctors(id), FOREIGN KEY (patientid) REFERENCES patients(id))",
+        "CREATE TABLE IF NOT EXISTS appointments (appointmentid INT AUTO_INCREMENT PRIMARY KEY, doctorid INT, patientid INT, time VARCHAR(100), date VARCHAR(100), paid TINYINT NOT NULL DEFAULT 0, FOREIGN KEY (doctorid) REFERENCES doctors(id), FOREIGN KEY (patientid) REFERENCES users(id))",
         (err, result) => {
           if (err) throw err;
         }

@@ -75,7 +75,7 @@ export const Patient_pro = () => {
       .catch((error) => {
         console.error('Error:', error);
       });
-        // fetchMyApplications();
+        fetchMyApplications();
         fetchMyAppointments();
       }
       
@@ -169,7 +169,7 @@ export const Patient_pro = () => {
                 <div key={appointment.appointmentid}
                 className="bg-white p-6 min-w-full rounded-md shadow-md mb-3"
               >
-                <h3 className="text-xl font-semibold mb-2">Patient Id : {appointment.patientd}</h3>
+                <h3 className="text-xl font-semibold mb-2">Patient Id : {appointment.patientid}</h3>
                 <p className="text-gray-700 mb-4">Doctor: {appointment.doctor}</p>
                 <p className="text-gray-800 mb-4">Status: {appointment.paid ? 'Paid' : 'Unpaid'}</p>
                 <p className="text-gray-800 mb-4">Date: {appointment.date}</p>

@@ -15,8 +15,6 @@ import { Patient_pro } from "./components/Patient_pro";
 import { Privilage_doc } from "./components/pages/privilage_doc";
 import {Admin} from "./components/pages/Admin"
 import {LabTechnician} from "./components/pages/LabTechnician";
-// import Admin from "./components/pages/Admin";
-// import PdfUploader from "./components/pages/PdfUploader";
 import {MedicalHistory} from "./components/pages/medicalhistory";
 import {VisitHistory} from "./components/pages/VisitHistory";
 import {PaymentSuccessPage} from "./components/pages/PaymentSuccess";

@@ -110,7 +110,7 @@ router.get("/dailyvisits",loggedIn, (req, res) => {
 })
 
 
-router.post("/patienthistory", loggedIn, (req, res) => {
+router.get+("/medhistory", loggedIn, (req, res) => {
     console.log("post history")
     db.query('SELECT * FROM patienthistory WHERE patientId = ?', req.user.id, (err, results) => {
         if (err) throw err;

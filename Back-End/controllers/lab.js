@@ -19,7 +19,7 @@ router.post("/labrequest", loggedIn, (req, res) => {
         if (err) throw err;
         else {
             userId = results[0].id;
-            if (req.cookies.token) {
+            if (req.cookies.token) { 
                     const decoded = await jwt.verify(
                         req.cookies.token,
                         process.env.JWT_SECRET
@@ -58,9 +58,10 @@ router.post("/labrequest", loggedIn, (req, res) => {
 })
 
 router.post("/labTechReq",loggedIn, (req, res) => {
-    let labreqId = req.body.labreqId;
+    console.log(req.body)
+    let labreqId = req.body.labreqId; 
 
-        db.query("UPDATE labrequest SET status = ?  WHERE labreqId = ?", ["approved", labreqId], (err, innerresults) => {
+        db.query("UPDATE labrequest SET status = ?  WHERE labreqId = ?", ["accepted", labreqId], (err, innerresults) => {
             if (err) throw err;
         })
     })

@@ -156,6 +156,27 @@ function DoctorProfile() {
         <div className="min-h-screen flex flex-col items-center justify-center bg-cover" style={{
             backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
         }}>
+            
+
+            <div>
+                <h2 className="text-center text-3xl font-bold text-gray-800">
+                    Doctor Profile
+                </h2>
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+                <img
+                    src="https://via.placeholder.com/150"
+                    alt="Profile Picture"
+                    className="w-32 h-32 rounded-full"
+                />
+                <h3 className="text-xl font-bold">Name: {data.name}</h3>
+                <p>Email: {data.specialization}</p>
+                <p>Phone: {data.phone}</p>
+                <p>Starting time: {data.fromTime}</p>
+                <p>Finishing time: {data.toTime}</p>
+
+
+            </div>
             {/* dailyvisits */}
             <div className="max-w-4xl mx-auto my-4">
                 <table class="min-w-full bg-white border border-gray-300">
@@ -187,26 +208,6 @@ function DoctorProfile() {
 
             </div>
 
-
-            <div>
-                <h2 className="text-center text-3xl font-bold text-gray-800">
-                    Doctor Profile
-                </h2>
-            </div>
-            <div className="flex flex-col items-center space-y-4">
-                <img
-                    src="https://via.placeholder.com/150"
-                    alt="Profile Picture"
-                    className="w-32 h-32 rounded-full"
-                />
-                <h3 className="text-xl font-bold">Name: {data.name}</h3>
-                <p>Email: {data.specialization}</p>
-                <p>Phone: {data.phone}</p>
-                <p>Starting time: {data.fromTime}</p>
-                <p>Finishing time: {data.toTime}</p>
-
-
-            </div>
 
             <div
                 className="min-h-screen flex flex-col items-center justify-center bg-cover"

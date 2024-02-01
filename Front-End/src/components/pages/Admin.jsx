@@ -156,10 +156,12 @@ export const Admin = () => {
   };
 
   const handlelabClick = (id, ind) => {
+    const token = document.cookie
     fetch("http://localhost:3001/labTechReq", {
       method: "POST",
+      credentials: "include",
       body: JSON.stringify({
-        labreqId: id,
+        labreqId: id
       }),
       headers: {
         "Content-Type": "application/json",
