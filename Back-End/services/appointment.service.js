@@ -19,7 +19,6 @@ const bookAppointment = async (req, res) => {
   }
 
   if (!validApp) {
-      console.log("date reason");
       res.redirect("/book?error=AppointmentUnavailable");
   } else {
       const doctorSchedule = await getDoctorSchedule(req.body.doctorid);
@@ -55,7 +54,6 @@ const getAppointments = async (id) => {
   WHERE appointments.appointmentid = ?;`
   const query2 = 'SELECT firstName from doctors WHERE id = ?';
   const results = await executeQuery(query, [id]);
-  console.log("get apps", id, results.length)
   return results;
 };
 const getAllAppointments = async (id) => {
@@ -66,7 +64,6 @@ const getAllAppointments = async (id) => {
   WHERE appointments.patientid = ?;`
   const query2 = 'SELECT firstName from doctors WHERE id = ?';
   const results = await executeQuery(query, [id]);
-  console.log("get apps", id, results.length)
   return results;
 };
 
@@ -97,7 +94,6 @@ const createAppointment = (appointment) => {
 
     db.query(query,  (err, result) => {
       if (err) {
-        console.log("err")
         if (err.code === 'ER_DUP_ENTRY') {
           reject(new Error('This appointment time is already taken'));
         } else {
@@ -111,7 +107,6 @@ const createAppointment = (appointment) => {
 };
 const updateAppointment = (appointmentid) => {
     // const { id, doctorId, patientId, startTime, endTime } = appointment;
-    console.log("inside updateAppointment")
     return new Promise((resolve, reject) => {
       const query = `UPDATE appointments SET paid = ${1} WHERE appointmentid= ${appointmentid}`;
       db.query(query, (err, result) => {

@@ -42,18 +42,15 @@ router.put("/:id", async (req, res) => {
   
 router.get("/profile", async (req, res) => {
   try {
-    console.log("getting user profile. The cookies", req.cookies.token);
     if (req.cookies.token) {
       const decoded = await jwt.verify(
         req.cookies.token,
         process.env.JWT_SECRET
       );  
-      console.log("This is user", decoded);
       let result;
 
       if (decoded.id) {
         result = await userService.getUser( decoded.id, decoded.role);
-        console.log("sent user", result);
       }
       res.status(200).json(result);
     }

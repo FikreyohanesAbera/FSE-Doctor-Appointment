@@ -96,7 +96,7 @@ export const Admin = () => {
       }
 
   useEffect(() => {
-    console.log(data, "changed?")
+    console.log(data, "change", changed)
     if(changed){
     postApplication(changed);
     }

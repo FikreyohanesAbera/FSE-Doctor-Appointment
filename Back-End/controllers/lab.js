@@ -85,16 +85,45 @@ router.post("/checkup",loggedIn,(req,res) => {
 
     },(err) => {
         if (err) throw err;
-        res.send("success")
+        res.json({
+            status: "success"
+        })
     }
         )
 })
+
+router.post("/labdocresult",loggedIn,(req,res) => {
+    db.query("SELECT email FROM users WHERE id = ?",req.user.id,(err,results) => {
+        console.log(results[0].email)
+        db.query("SELECT filepath FROM labtest WHERE doctorEmail = ?",results[0].email,(error,resultz) => {
+            console.log(resultz.length)
+            if (error) throw error;
+            if (resultz.length > 0){
+                return res.json({
+                    filePath: resultz[0].filepath
+                })
+
+            }
+            else{
+                return res.json({
+                    filePath: ''
+                })
+            }
+
+
+        })
+
+    })
+    
+});
 
 
 router.post("/labresult",loggedIn,(req,res) => { 
     console.log("in/labresult")
     db.query("SELECT email FROM users WHERE id = ?",req.user.id,(err,results) => { 
         db.query("SELECT filepath FROM labtest WHERE patientEmail = ?",results[0].email,(error,resultz) => { 
+            console.log(resultz.length)
+
             if (error) throw error; 
             if (resultz.length > 0){ 
                 return res.json({ 

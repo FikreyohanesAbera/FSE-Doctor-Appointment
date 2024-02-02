@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 function DoctorProfile() {
     const [data, setData] = useState({
 
@@ -13,6 +15,10 @@ function DoctorProfile() {
     const [formDataY, setFormDataY] = useState({
 
     });
+    const [isempty, setIsEmpty] = useState(true);
+    const [filename, setFileName] = useState('');
+
+
     const [error, setError] = useState('')
     const handleChange = (e) => {
 
@@ -89,6 +95,30 @@ function DoctorProfile() {
             })
 
     }, [])
+    useEffect(() => {
+        const token = document.cookie;
+        fetch("http://localhost:3001/labdocresult", {
+            method: 'POST',
+            credentials: "include",
+            body: JSON.stringify({
+                token: token
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(res => res.json())
+            .then(response => {
+                if (response.filePath) {
+                    console.log(response);
+                    setFileName(response.filePath);
+                    setIsEmpty(false);
+
+                }
+
+            })
+
+    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -149,6 +179,10 @@ function DoctorProfile() {
                 // }
             })
     }
+    const handleDownload = () => {
+        window.open(`http://localhost:3001/download/${filename}`, '_blank');
+    };
+
 
 
 
@@ -171,7 +205,7 @@ function DoctorProfile() {
                     className="w-32 h-32 rounded-full"
                 />
                 <h3 className="text-xl font-bold">Name: {data.name}</h3>
-                <p>Email: {data.specialization}</p>
+                <p>Specialization: {data.specialization}</p>
                 <p>Phone: {data.phone}</p>
                 <p>Starting time: {data.fromTime}</p>
                 <p>Finishing time: {data.toTime}</p>
@@ -179,6 +213,9 @@ function DoctorProfile() {
 
             </div>
             {/* dailyvisits */}
+            <h2 className="text-center mt-8 text-3xl font-bold text-gray-800">
+                Today's Visits
+            </h2>
             <div className="max-w-4xl mx-auto my-4 w-lvw">
                 <table class="min-w-full bg-white border border-gray-300">
                     <thead>
@@ -391,6 +428,19 @@ function DoctorProfile() {
                 </div>
 
             </div>
+            <Link to={`/OrderCheckup`} className="p-5">
+                <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Order checkup
+                </button>
+            </Link>
+            {(!isempty) ?
+                <div className="text-center mt-5">
+                    <h2 className="text-center text-3xl font-bold text-gray-800">LabResults</h2>
+                    <button className="bg-blue-500 my-3 m-auto text-center hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onClick={handleDownload}>
+                        Download File
+                    </button> </div> : null}
 
         </div>
 

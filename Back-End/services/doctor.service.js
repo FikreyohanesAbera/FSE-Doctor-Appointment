@@ -1,9 +1,11 @@
 const db = require("../routes/db-config");
 const patientsService = require("./user.service");
 const createDoctor = async (doctor) => {
+  console.log("here is the doctor",doctor);
   const user = await patientsService.getUser(doctor.userId, "user");
-  console.log("user", user);
+  console.log("user", user, typeof(doctor));
   const duplicate = await patientsService.getUser(doctor.userId, "doctor");
+
 
   const { startTime, endTime, department } = doctor;
   return new Promise((resolve, reject) => {
@@ -16,6 +18,7 @@ const createDoctor = async (doctor) => {
           console.log("the duplicate doctor", result);
           resolve(result[0]);
         } else {
+          console.log("iiiiiiiiiiiiiiiiiiiiiiiiii", endTime, startTime,department)
           db.query(
             "INSERT INTO doctors SET ?",
             {
@@ -29,6 +32,7 @@ const createDoctor = async (doctor) => {
               password: user.password,
             },
             (err, result) => {
+              if(err) console.log(err);
               if (err) reject(err);
               resolve(result);
             }

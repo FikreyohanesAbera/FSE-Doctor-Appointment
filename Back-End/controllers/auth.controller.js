@@ -9,13 +9,11 @@ router.use(bodyParser.urlencoded({
 
   router.post('/signup', async (req, res) => {
     try {
-      console.log("signup request", req.body)
       const patient = req.body;
       const {email, password, passwordConfirm} = patient 
       const verification = await authService.verifySignUp(email, password, passwordConfirm)
-      console.log("verify signup", verification) 
+      console.log("verifcation", verification)
       if (verification){
-        console.log("creating account")
         const { token, patient: savedPatient } = await authService.createAndSignIn(patient);
         const cookieOptions = {
           expires: new Date(
@@ -37,7 +35,6 @@ router.use(bodyParser.urlencoded({
   router.post('/login', async (req, res) => {
     try {
       const { email, password, role } = req.body;
-      console.log("role", req.body)
       if (!email || !password) {
           req.error1 = true;
           return res.status(400).sendFile("Please Provide an email and password"
@@ -49,7 +46,6 @@ router.use(bodyParser.urlencoded({
       if(verification){
         const token = authService.createToken(verification);
         
-        console.log("verofication", verification)
         
         const cookieOptions = {
             expires: new Date(
@@ -74,7 +70,6 @@ router.use(bodyParser.urlencoded({
   router.all('/logout', async (req, res) => {
     console.log("logging out")
     try {
-      console.log(res.cookie("userSave", { path: "http://localhost:5173/" }).userSave)
       res.status(200).clearCookie("userSave")
         .send("/");
     } catch (error) {

@@ -56,6 +56,7 @@ router.post("/book", loggedIn, (req, res) => {
                 const compareTimeDate = new Date(`2024-01-01 ${compareTime}`);
                 const storedStartTimeDate = new Date(`2024-01-01 ${responses[0].fromTime}`);
                 const storedFinishTimeDate = new Date(`2024-01-01 ${responses[0].toTime}`);
+                console.log(compareTimeDate,storedStartTimeDate,storedFinishTimeDate);
                 if ( storedStartTimeDate < compareTimeDate && compareTimeDate <= new Date(storedFinishTimeDate.getTime() - 30 * 60000)) {
                     console.log("verytrue", req.user)
                     // will change to ...

@@ -28,6 +28,7 @@ router.put('/:id', async (req, res) => {
 
 // Get a doctor account or all doctor accounts
 router.get('/:id?', async (req, res) => {
+  console.log("in doctors get id")
   try {
     const id = req.params.id;
     let result;
@@ -43,6 +44,7 @@ router.get('/:id?', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+  console.log("in doctors get")
   try {
     result = await doctorsService.getDoctors();
     res.status(200).json(result);

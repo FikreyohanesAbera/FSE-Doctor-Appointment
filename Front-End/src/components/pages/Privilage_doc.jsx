@@ -120,51 +120,7 @@ export const Privilage_doc = () => {
               </div>
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="email" className="block mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="password" className="block mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Phone
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                required
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                placeholder="Enter your phone number"
-                onChange={(event) => setPhone(event.target.value)}
-
-              />
-            </div>
-
+            
             {role === "doctor" && (
               <div>
                 <div className="mb-4">

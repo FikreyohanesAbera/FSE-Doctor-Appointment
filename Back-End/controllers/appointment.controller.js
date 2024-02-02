@@ -14,15 +14,12 @@ router.post('/', async (req, res) => {
 });
 router.get('/user', async (req, res) => {
   try {
-    console.log("user appointments")
     if(req.cookies.token){
       const decoded = await jwt.verify(req.cookies.token,
         process.env.JWT_SECRET
       );
-      console.log("user appointments", decoded.id )
    
     const result = await appointmentsService.getAllAppointments(decoded.id);
-    console.log("result of appointment fetch", result)
     if (result) res.status(201).json(result);
     else res.status(500);
   }

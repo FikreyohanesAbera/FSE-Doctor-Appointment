@@ -1,12 +1,10 @@
 const db = require('../routes/db-config');
   const createApplication = (application, userId) => {
     let { privilege, startTime, endTime, department, specialization} = application;
-    console.log("id", userId, department, specialization, startTime, endTime)
     return new Promise((resolve, reject) => {
       db.query('SELECT * FROM applications WHERE userId= ?', [userId], (err, result) => {
         if (err) reject(err);
         if(result.length > 0){ 
-          console.log("the duplicate" ,result)
           resolve(result[0]);
 
         }
@@ -17,7 +15,6 @@ const db = require('../routes/db-config');
           db.query(
             "INSERT INTO applications SET ?",{ userId: userId, privilege: privilege, startTime: startTime , endTime: endTime, department:  department },(err, result) => {
               if (err) {
-                console.log("err inserting");
                   reject(err);
               } else {
                 resolve(result);
@@ -33,7 +30,6 @@ const db = require('../routes/db-config');
     db.query('SELECT * FROM applications', (err, result) => {
       if (err) reject(err);
       else{
-        console.log('the applications', result)
       }
       resolve(result);
     })
@@ -45,7 +41,6 @@ const db = require('../routes/db-config');
     db.query('SELECT * FROM applications WHERE userId=?',[user], (err, result) => {
       if (err) reject(err);
       else{
-        console.log('the applications', result)
       }
       resolve(result);
     })
@@ -57,7 +52,6 @@ const db = require('../routes/db-config');
       db.query('UPDATE applications SET status = ? WHERE id = ?',[status, id], (err, result) => {
         if (err) reject(err);
         else{
-          console.log('the applications', result)
         }
         resolve(result);
       })

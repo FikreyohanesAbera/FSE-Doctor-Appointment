@@ -6,7 +6,7 @@ const moment = require("moment");
 
 function getDoctorName(doctorId) {
     return new Promise((resolve, reject) => {
-        db.query("SELECT name FROM doctors WHERE id = ?", [doctorId], (err, doctorName) => {
+        db.query("SELECT firstName FROM doctors WHERE id = ?", [doctorId], (err, doctorName) => {
             if (err) {
                 reject(err);
             } else {
@@ -17,13 +17,33 @@ function getDoctorName(doctorId) {
 }
 router.post("/patient", loggedIn, (req, res) => {
     db.query('SELECT * FROM appointments WHERE patientid = ?', [req.user.id], (err, results) => {
-        let time;
+        let filtered = [];
         if (err) throw err;
         if (results.length === 0) {
-            time = 0
         }
         else {
-            time = moment(results[0].time).endOf('day').fromNow().match(/\d+/g);
+            results.forEach(app => {
+                const isoStringDate = app.time;
+                console.log(isoStringDate);
+                const momentObject = moment(isoStringDate);
+                if (momentObject.isValid()) {
+                    const now = moment();
+                    const duration = moment.duration(momentObject.diff(now));
+
+                    const hours = Math.floor(duration.asHours());
+                    const minutes = Math.floor(duration.asMinutes()) % 60;
+                    if ((hours > 0 && minutes > 0) && hours < 22) filtered.push(`${hours} hours:${minutes} minutes`);
+                } else {
+                    console.log('Invalid Date');
+                }
+
+            })
+
+
+
+
+
+
         }
         db.query("SELECT email FROM users WHERE id = ?", req.user.id, (error, responses) => {
             db.query('SELECT * FROM checkups WHERE patientEmail = ?', [responses[0].email], (err, results) => {
@@ -32,22 +52,31 @@ router.post("/patient", loggedIn, (req, res) => {
                 Promise.all(results.map(result => getDoctorName(result.doctorId)))
                     .then(doctorNames => {
                         for (let i = 0; i < results.length; i++) {
+                            let isoString = results[i].date;
+                            var dateObject = new Date(isoString);
+                            var year = dateObject.getFullYear();
+                            var month = (dateObject.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed, so we add 1
+                            var day = dateObject.getDate().toString().padStart(2, '0');
+                            var result = year + '-' + month + '-' + day;
+                            results[i].date = result;
                             let checkup = { data: results[i], docName: doctorNames[i] };
                             checkupArr.push(checkup);
 
                         }
+                        let returnTime = (filtered.length > 0) ? filtered[0] : '';
+                        console.log(filtered);
 
                         res.json({
-                            remainingTime: time[0],
+                            remainingTime: returnTime,
                             checkups: checkupArr
-        
+
                         });
 
                     })
                     .catch(error => {
                         console.error("Error fetching doctor names:", error);
                     });
-                
+
 
 
 
@@ -67,7 +96,6 @@ router.post("/patient", loggedIn, (req, res) => {
 
 })
 router.post("/doctorProfile", loggedIn, (req, res) => {
-    console.log(req.body.token);
 
     db.query('SELECT * FROM doctors WHERE userId = ?', [req.user.id], (err, results) => {
         if (err) throw err;
@@ -87,7 +115,7 @@ router.post("/doctorProfile", loggedIn, (req, res) => {
     });
 
 });
-router.get("/dailyvisits",loggedIn, (req, res) => {
+router.get("/dailyvisits", loggedIn, (req, res) => {
     let arr = [];
     db.query("SELECT * FROM appointments WHERE doctorId = ?", req.user.id, (err, results) => {
         if (err) throw err;
@@ -123,7 +151,7 @@ router.get("/medhistory", loggedIn, (req, res) => {
 });
 router.get("/visithistory", loggedIn, (req, res) => {
     // [req.user.id]
-    db.query('SELECT * FROM appointments WHERE patientId = ? AND ? > date', [1, new Date()], (err, results) => {
+    db.query('SELECT * FROM appointments WHERE patientId = ?', req.user.id, (err, results) => {
         if (err) throw err;
         return res.json({
             visHistory: results
@@ -146,39 +174,19 @@ router.get("/doctor/:id", (req, res) => {
 
 router.get("/admin", (req, res) => {
 
-            db.query('SELECT * FROM labrequest WHERE status = ?', ["pending"], (err, result2) => {
-                if (err) throw err;
-                else {
-                    res.json({
-                        labInfo: result2
-
-                    });
-                }
-
-            })
-
-        }
-
-    )
-
-
-
-router.get("/labtech", loggedIn, (req, res) => {
-    db.query('SELECT name FROM users WHERE id = ?', [req.user.id], (err, resultss) => {
+    db.query('SELECT * FROM labrequest WHERE status = ?', ["pending"], (err, result2) => {
         if (err) throw err;
-        db.query("SELECT * FROM labrequest WHERE labtechName = ? AND status = ?", [resultss[0].name, "approved"], (err, results) => {
-            if (err) throw err;
-            res.render("labtech.ejs", {
-                data: results
-            })
-        });
+        else {
+            res.json({
+                labInfo: result2
+
+            });
+        }
 
     })
 
+}
 
-})
-
-
-
+)
 
 module.exports = router;

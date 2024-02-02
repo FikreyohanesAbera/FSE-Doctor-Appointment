@@ -19,6 +19,7 @@ import {MedicalHistory} from "./components/pages/medicalhistory";
 import {VisitHistory} from "./components/pages/VisitHistory";
 import {PaymentSuccessPage} from "./components/pages/PaymentSuccess";
 import DoctorProfile from "./components/pages/doctors/DoctorProfile";
+import OrderCheckup from "./components/pages/doctors/OrderCheckups";
 const App = () => (
   <>
     <NavBar />
@@ -45,6 +46,9 @@ const App = () => (
         <Route path = "/medicalhistory" element = {<MedicalHistory/>}/> 
         <Route path = "/visithistory" element = {<VisitHistory/>}/> 
         <Route path="/payment/success" element={<PaymentSuccessPage />} />
+        <Route path = "/ordercheckup" element = {<OrderCheckup/>}/> 
+
+        
         
       </Routes>
     </main>

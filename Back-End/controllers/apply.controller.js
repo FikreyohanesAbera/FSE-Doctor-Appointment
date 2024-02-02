@@ -36,6 +36,7 @@ router.post('/', async (req, res) => {
     }
   });
   router.post('/result', async (req, res) => {
+    console.log("")
     try {
       const {privilege, id, status} = req.body
       applyService.updateApplications(id, status)
@@ -43,7 +44,7 @@ router.post('/', async (req, res) => {
       if (status == "accepted"){
           console.log("Posting approval", privilege, req.body)
         if(privilege == "doctor"){
-          console.log("creating doctor")
+          console.log("creating dd")
           const result = await doctorService.createDoctor(req.body)
           res.status(201).json(result);
         } else if (privilege =="labtechnician"){
@@ -73,9 +74,7 @@ router.post('/', async (req, res) => {
       const decoded = await jwt.verify(req.cookies.token,
       process.env.JWT_SECRET
     );
-      console.log("getting user applications", req.cookies, decoded)
       const applications = await applyService.getUserApplications(decoded.id)
-      console.log("user application requests",applications)
       res.status(201).json(applications);
     } catch (error) {
       res.status(500).json({ message: error.message });
