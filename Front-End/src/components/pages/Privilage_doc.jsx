@@ -67,9 +67,9 @@ export const Privilage_doc = () => {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover"
-      style={{
-        backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
-      }}
+      // style={{
+      //   backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
+      // }}
     >
       <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 mt-4 mb-4">
         <div className="max-w-md w-full space-y-8">

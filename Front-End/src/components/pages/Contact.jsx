@@ -4,9 +4,9 @@ export const Contact = () => {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover"
-      style={{
-        backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
-      }}
+      // style={{
+      //   backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
+      // }}
     >
       <div className="bg-white bg-opacity-80 shadow-md rounded-lg p-8">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Contact Us</h1>

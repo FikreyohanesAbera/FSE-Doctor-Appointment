@@ -55,9 +55,9 @@ export const Login = (props) => {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover"
-      style={{
-        backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
-      }}
+      // style={{
+      //   backgroundImage: "url('https://source.unsplash.com/1600x900/?medical')",
+      // }}
     >
       <div className="flex items-center justify-center bg-white mt-5">
         <div className=" shadow-md rounded-lg p-8 w-96">
