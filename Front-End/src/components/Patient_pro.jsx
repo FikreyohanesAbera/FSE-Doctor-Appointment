@@ -13,7 +13,7 @@ export const Patient_pro = () => {
 
   useEffect(() => {
     const token = document.cookie;
-    fetch(`http://fse-doctor-appointment.onrender.com/users/profile`, {
+    fetch(`https://fse-doctor-appointment.onrender.com/users/profile`, {
       method: 'POST',
       credentials: "include",
       headers: {
@@ -43,7 +43,7 @@ export const Patient_pro = () => {
   useEffect(() => {
     const token = document.cookie;
 
-    fetch("http://fse-doctor-appointment.onrender.com/patient", {
+    fetch("https://fse-doctor-appointment.onrender.com/patient", {
       method: 'POST',
       body: JSON.stringify({
         token: token
@@ -60,7 +60,7 @@ export const Patient_pro = () => {
   }, [])
   useEffect(() => {
     const token = document.cookie;
-    fetch("http://fse-doctor-appointment.onrender.com/labresult", {
+    fetch("https://fse-doctor-appointment.onrender.com/labresult", {
       method: 'POST',
       body: JSON.stringify({
         token: token
@@ -81,7 +81,7 @@ export const Patient_pro = () => {
 
   }, [])
   const handleDownload = () => {
-    window.open(`http://fse-doctor-appointment.onrender.com/download/${filename}`, '_blank');
+    window.open(`https://fse-doctor-appointment.onrender.com/download/${filename}`, '_blank');
   };
 
   return (
@@ -95,7 +95,7 @@ export const Patient_pro = () => {
           </div>
           <div className="flex flex-col items-center space-y-4">
             <img
-              src="https://via.placeholder.com/150"
+              src="httpss://via.placeholder.com/150"
               alt="Profile Picture"
               className="w-32 h-32 rounded-full"
             />

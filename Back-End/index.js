@@ -10,7 +10,7 @@ const cors = require("cors");
 
 // CORS
 const corsOptions = {
-  origin: ["http://fse-doctor-appointment.onrender.com","https://efoyta-doctor-appointment-app.vercel.app"],
+  origin: ["https://fse-doctor-appointment.onrender.com","https://efoyta-doctor-appointment-app.vercel.app"],
   credentials: true,
   optionSuccessStatus: 200,
 };
