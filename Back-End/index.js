@@ -8,39 +8,43 @@ const app = express();
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY || "sk_test_dummy");
 const cors = require("cors");
 
-// Let Express know it's behind HTTPS proxy (Render)
+// trust proxy so secure cookies work behind Render HTTPS
 app.set("trust proxy", 1);
 
-// EXACT origins that may call your API
-const ALLOWED_ORIGINS = new Set([
-  "http://localhost:5173",                           // dev
-  "https://efoyta-doctor-appointment-app.vercel.app" // your frontend
-  // you do NOT need to include your own Render backend url here
+// Allow your frontend (and localhost for dev)
+const ALLOWED = new Set([
+  "http://localhost:5173",
+  "https://efoyta-doctor-appointment-app.vercel.app",
+  // optionally allow preview URLs:
+  // e.g. "https://efoyta-doctor-appointment-app-git-main-<user>.vercel.app"
 ]);
 
-const corsOptionsDelegate = (req, cb) => {
+const corsDelegate = (req, cb) => {
   const origin = req.header("Origin");
-  // allow only if exact match
-  const isAllowed = origin && ALLOWED_ORIGINS.has(origin);
+  const isAllowed =
+    !origin
+    || ALLOWED.has(origin)
+    || (origin.startsWith("https://efoyta-doctor-appointment-app-") && origin.endsWith(".vercel.app")); // previews
 
-  const opts = {
-    origin: isAllowed,             // echo exact origin or deny
-    credentials: true,             // allow cookies/credentials
+  cb(null, {
+    origin: isAllowed,                       // echo allowed origin
+    credentials: true,                       // allow cookies/credentials
     methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+    // IMPORTANT: allow the headers your frontend sends; include Content-Type at minimum
     allowedHeaders: ["Content-Type","Authorization","X-Requested-With"],
-    exposedHeaders: [],            // add if you need to read custom headers client-side
-    optionsSuccessStatus: 204      // OK for Chrome/Safari
-  };
-  cb(null, opts);
+    optionsSuccessStatus: 204,               // note the 's' in optionsSuccessStatus
+  });
 };
 
-// MUST be before your routes
-app.use(cors(corsOptionsDelegate));
-// Handle preflight for all routes
-app.options("*", cors(corsOptionsDelegate));
+// CORS must be before routes
+app.use(cors(corsDelegate));
+// Handle preflight globally
+app.options("*", cors(corsDelegate));
 
+// Parse JSON AFTER CORS
 app.use(cookieParser());
 app.use(express.json());
+
 
 // --- Seed admins (same as before) ---
 const admins = [
