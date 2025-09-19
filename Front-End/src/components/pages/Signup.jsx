@@ -23,7 +23,7 @@ export const Signup = () => {
     }
     console.log(userData)
 
-    fetch('http://fse-doctor-appointment.onrender.com:3001/auth/signup', {
+    fetch('http://fse-doctor-appointment.onrender.com/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

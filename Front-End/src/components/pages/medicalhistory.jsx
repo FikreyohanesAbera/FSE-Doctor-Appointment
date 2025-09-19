@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 export const MedicalHistory = () => {
     const [medicalHistory, setmedicalHistory] = useState([]);
     useEffect(() => {
-        fetch("http://fse-doctor-appointment.onrender.com:3001/patienthistory",{
+        fetch("http://fse-doctor-appointment.onrender.com/patienthistory",{
             method: "POST",
             body: JSON.stringify({
                 token: document.cookie

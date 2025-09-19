@@ -28,7 +28,7 @@ function OrderCheckup() {
 
         sentData["token"] = document.cookie;
         console.log(sentData)
-        fetch("http://fse-doctor-appointment.onrender.com:3001/checkup", {
+        fetch("http://fse-doctor-appointment.onrender.com/checkup", {
             method: 'POST',
             credentials: "include",
 

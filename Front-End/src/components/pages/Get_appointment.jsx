@@ -40,12 +40,12 @@ export const Get_appointment = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Send form data to the backend on port 3001
+    // Send form data to the backend on port
     console.log(JSON.stringify(formData))
     let sentData = formData;
     sentData["token"] = document.cookie;
     
-    fetch('http://fse-doctor-appointment.onrender.com:3001/book', {
+    fetch('http://fse-doctor-appointment.onrender.com/book', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

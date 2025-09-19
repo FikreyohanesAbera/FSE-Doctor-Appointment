@@ -11,7 +11,7 @@ export const LabTechnician = () => {
 
   useEffect(() => {
     const token = document.cookie;
-    fetch(`http://fse-doctor-appointment.onrender.com:3001/users/profile`, {
+    fetch(`http://fse-doctor-appointment.onrender.com/users/profile`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -49,7 +49,7 @@ export const LabTechnician = () => {
     console.log("ggggggggggggg")
 
 
-    fetch("http://fse-doctor-appointment.onrender.com:3001/labtest", {
+    fetch("http://fse-doctor-appointment.onrender.com/labtest", {
       method: 'POST',
       credentials: "include",
       body: sentData

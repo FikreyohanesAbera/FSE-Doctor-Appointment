@@ -14,7 +14,7 @@ export const Find_doctor = () => {
 
   // fetch the users
   useEffect(() => {
-    fetch('http://fse-doctor-appointment.onrender.com:3001/doctors')
+    fetch('http://fse-doctor-appointment.onrender.com/doctors')
       .then(response => response.json())
       .then(data => {
         setApiUsers(data)

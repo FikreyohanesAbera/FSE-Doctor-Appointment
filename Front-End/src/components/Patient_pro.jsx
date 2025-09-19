@@ -13,7 +13,7 @@ export const Patient_pro = () => {
 
   useEffect(() => {
     const token = document.cookie;
-    fetch(`http://fse-doctor-appointment.onrender.com:3001/users/profile`, {
+    fetch(`http://fse-doctor-appointment.onrender.com/users/profile`, {
       method: 'POST',
       credentials: "include",
       headers: {
@@ -43,7 +43,7 @@ export const Patient_pro = () => {
   useEffect(() => {
     const token = document.cookie;
 
-    fetch("http://fse-doctor-appointment.onrender.com:3001/patient", {
+    fetch("http://fse-doctor-appointment.onrender.com/patient", {
       method: 'POST',
       body: JSON.stringify({
         token: token
@@ -60,7 +60,7 @@ export const Patient_pro = () => {
   }, [])
   useEffect(() => {
     const token = document.cookie;
-    fetch("http://fse-doctor-appointment.onrender.com:3001/labresult", {
+    fetch("http://fse-doctor-appointment.onrender.com/labresult", {
       method: 'POST',
       body: JSON.stringify({
         token: token
@@ -81,7 +81,7 @@ export const Patient_pro = () => {
 
   }, [])
   const handleDownload = () => {
-    window.open(`http://fse-doctor-appointment.onrender.com:3001/download/${filename}`, '_blank');
+    window.open(`http://fse-doctor-appointment.onrender.com/download/${filename}`, '_blank');
   };
 
   return (
