@@ -45,7 +45,7 @@ export const Get_appointment = () => {
     let sentData = formData;
     sentData["token"] = document.cookie;
     
-    fetch('http://localhost:3001/book', {
+    fetch('http://fse-doctor-appointment.onrender.com:3001/book', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

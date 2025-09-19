@@ -71,7 +71,6 @@ router.use(bodyParser.urlencoded({
   router.all('/logout', async (req, res) => {
     console.log("logging out")
     try {
-      console.log(res.cookie("userSave", { path: "http://localhost:5173/" }).userSave)
       res.status(200).clearCookie("userSave")
         .send("/");
     } catch (error) {

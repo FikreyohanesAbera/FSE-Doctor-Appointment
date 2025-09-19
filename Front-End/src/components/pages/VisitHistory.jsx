@@ -6,7 +6,7 @@ export const VisitHistory = () => {
     const [visitHistory, setvisitHistory] = useState([]);
     useEffect(() => {
         console.log("yigebal")
-        fetch("http://localhost:8000/visithistory")
+        fetch("http://fse-doctor-appointment.onrender.com:8000/visithistory")
             .then(res => res.json())
             .then(data => {
                 console.log(data.visHistory[0])

@@ -14,7 +14,7 @@ export const Login = (props) => {
       role
     }
     // console.log("logging", user)
-    fetch('http://localhost:3001/auth/login', {
+    fetch('http://fse-doctor-appointment.onrender.com:3001/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -29,7 +29,7 @@ export const Admin = () => {
   const postApplication = (app) => {
 
     console.log("posting", app)
-    fetch('http://localhost:3001/apply/result', {
+    fetch('http://fse-doctor-appointment.onrender.com:3001/apply/result', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -67,7 +67,7 @@ export const Admin = () => {
   }
 
   const fetchApplicationRequests = () => {
-    fetch(`http://localhost:3001/apply`, {
+    fetch(`http://fse-doctor-appointment.onrender.com:3001/apply`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ export const Admin = () => {
   }, [data])
   useEffect(() => {
     const token = document.cookie;
-    fetch(`http://localhost:3001/users/profile`, {
+    fetch(`http://fse-doctor-appointment.onrender.com:3001/users/profile`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ export const Admin = () => {
   const [labInfo, setLabInfo] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/admin")
+    fetch("http://fse-doctor-appointment.onrender.com:3001/admin")
       .then(res => res.json())
       .then(data => {
         setLabInfo(data.labInfo);
@@ -145,7 +145,7 @@ export const Admin = () => {
   };
 
   const handlelabClick = (id, ind) => {
-    fetch("http://localhost:3001/labTechReq", {
+    fetch("http://fse-doctor-appointment.onrender.com:3001/labTechReq", {
       method: "POST",
       body: JSON.stringify({
         labreqId: id,
@@ -157,7 +157,7 @@ export const Admin = () => {
 
   }
   const handleRejectLabClick = (id, ind) => {
-    fetch("http://localhost:3001/rejectlabapply", {
+    fetch("http://fse-doctor-appointment.onrender.com:3001/rejectlabapply", {
       method: "POST",
       body: JSON.stringify({
         labreqId: id,

@@ -10,7 +10,7 @@ const cors = require("cors");
 
 // CORS
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://localhost:5173"],
+  origin: ["http://fse-doctor-appointment.onrender.com"],
   credentials: true,
   optionSuccessStatus: 200,
 };
