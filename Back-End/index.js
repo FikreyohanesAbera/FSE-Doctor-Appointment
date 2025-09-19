@@ -8,36 +8,15 @@ const app = express();
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY || "sk_test_dummy");
 const cors = require("cors");
 
-// Render sits behind a proxy (needed for secure cookies & correct scheme)
-app.set("trust proxy", 1);
+// allow ALL origins, headers, and methods
+app.use(cors({
+  origin: "*",
+  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+  allowedHeaders: ["*"],
+}));
 
-// Allow your frontend origins (and localhost for dev)
-const ALLOWED = new Set([
-  "http://localhost:5173",
-  "https://efoyta-doctor-appointment-app.vercel.app",
-  // optional: preview URLs
-  // e.g. "https://efoyta-doctor-appointment-app-git-main-<user>.vercel.app"
-]);
-
-const corsDelegate = (req, cb) => {
-  const origin = req.header("Origin");
-  const isAllowed =
-    !origin ||
-    ALLOWED.has(origin) ||
-    (origin?.startsWith("https://efoyta-doctor-appointment-app-") &&
-     origin?.endsWith(".vercel.app")); // previews
-
-  cb(null, {
-    origin: isAllowed ? origin : false,      // reflect allowed origin, block otherwise
-    credentials: true,
-    methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
-    // 🔑 Do NOT hardcode allowedHeaders; let cors echo Access-Control-Request-Headers automatically
-    optionsSuccessStatus: 204,
-  });
-};
-
-app.use(cors(corsDelegate));
-app.options("*", cors(corsDelegate)); // handle preflight globally
+// handle preflight
+app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
