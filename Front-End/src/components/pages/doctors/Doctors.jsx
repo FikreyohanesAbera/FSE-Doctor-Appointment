@@ -10,7 +10,7 @@ export const Doctors = (props) => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`http://fse-doctor-appointment.onrender.com/doctor/${id}`)
+    fetch(`https://fse-doctor-appointment.onrender.com/doctor/${id}`)
       .then(res => res.json())
       .then(data => {
         console.log(data.doctorData)

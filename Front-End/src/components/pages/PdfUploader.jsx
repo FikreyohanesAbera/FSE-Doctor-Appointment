@@ -18,7 +18,7 @@ function PdfUploader() {
     formData.append('description', description);
 
     try {
-      const response = await fetch('http://fse-doctor-appointment.onrender.com:8000/submitForm', {
+      const response = await fetch('https://fse-doctor-appointment.onrender.com:8000/submitForm', {
         method: 'POST',
         body: formData,
       });

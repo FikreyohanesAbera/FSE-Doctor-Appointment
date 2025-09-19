@@ -28,7 +28,7 @@ export const Privilage_doc = () => {
       phone,
     }
     
-    fetch('http://fse-doctor-appointment.onrender.com/apply', {
+    fetch('https://fse-doctor-appointment.onrender.com/apply', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

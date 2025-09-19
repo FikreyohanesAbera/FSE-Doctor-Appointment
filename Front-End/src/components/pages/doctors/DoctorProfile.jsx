@@ -36,7 +36,7 @@ function DoctorProfile() {
     };
     useEffect(() => {
         const token = document.cookie;
-        fetch("http://fse-doctor-appointment.onrender.com/labdocresult", {
+        fetch("https://fse-doctor-appointment.onrender.com/labdocresult", {
           method: 'POST',
           body: JSON.stringify({
             token: token
@@ -58,11 +58,11 @@ function DoctorProfile() {
     
       }, [])
       const handleDownload = () => {
-        window.open(`http://fse-doctor-appointment.onrender.com/download/${filename}`, '_blank');
+        window.open(`https://fse-doctor-appointment.onrender.com/download/${filename}`, '_blank');
       };
     useEffect(() => {
         // mine
-        fetch("http://fse-doctor-appointment.onrender.com/doctorProfile", {
+        fetch("https://fse-doctor-appointment.onrender.com/doctorProfile", {
             method: 'POST',
             credentials: "include",
             headers: {
@@ -85,7 +85,7 @@ function DoctorProfile() {
 
 
 
-        fetch("http://fse-doctor-appointment.onrender.com/dailyvisits", {
+        fetch("https://fse-doctor-appointment.onrender.com/dailyvisits", {
             method: 'POST',
             credentials: "include",
             headers: {
@@ -119,7 +119,7 @@ function DoctorProfile() {
         let sentData = formData;
 
         sentData["token"] = document.cookie;
-        fetch("http://fse-doctor-appointment.onrender.com/labrequest", {
+        fetch("https://fse-doctor-appointment.onrender.com/labrequest", {
             method: 'POST',
             credentials: "include",
 
@@ -149,7 +149,7 @@ function DoctorProfile() {
         sentData["token"] = document.cookie;
 
 
-        fetch("http://fse-doctor-appointment.onrender.com/patientmedhistory", {
+        fetch("https://fse-doctor-appointment.onrender.com/patientmedhistory", {
             method: 'POST',
             credentials: "include",
 
