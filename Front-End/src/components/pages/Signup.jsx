@@ -28,6 +28,7 @@ export const Signup = () => {
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: "include", 
       body: JSON.stringify(userData)
     }).then(response => {
       if (!response.ok) {

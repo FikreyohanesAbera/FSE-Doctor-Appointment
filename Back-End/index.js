@@ -8,13 +8,37 @@ const app = express();
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY || "sk_test_dummy");
 const cors = require("cors");
 
-// CORS
-const corsOptions = {
-  origin: ["https://fse-doctor-appointment.onrender.com","https://efoyta-doctor-appointment-app.vercel.app"],
-  credentials: true,
-  optionSuccessStatus: 200,
+// Let Express know it's behind HTTPS proxy (Render)
+app.set("trust proxy", 1);
+
+// EXACT origins that may call your API
+const ALLOWED_ORIGINS = new Set([
+  "http://localhost:5173",                           // dev
+  "https://efoyta-doctor-appointment-app.vercel.app" // your frontend
+  // you do NOT need to include your own Render backend url here
+]);
+
+const corsOptionsDelegate = (req, cb) => {
+  const origin = req.header("Origin");
+  // allow only if exact match
+  const isAllowed = origin && ALLOWED_ORIGINS.has(origin);
+
+  const opts = {
+    origin: isAllowed,             // echo exact origin or deny
+    credentials: true,             // allow cookies/credentials
+    methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+    allowedHeaders: ["Content-Type","Authorization","X-Requested-With"],
+    exposedHeaders: [],            // add if you need to read custom headers client-side
+    optionsSuccessStatus: 204      // OK for Chrome/Safari
+  };
+  cb(null, opts);
 };
-app.use(cors(corsOptions));
+
+// MUST be before your routes
+app.use(cors(corsOptionsDelegate));
+// Handle preflight for all routes
+app.options("*", cors(corsOptionsDelegate));
+
 app.use(cookieParser());
 app.use(express.json());
 
