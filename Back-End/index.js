@@ -1,49 +1,26 @@
 const express = require("express");
-const db = require("./routes/db-config"); // now SQLite adapter
+const db = require("./routes/db-config");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const port = process.env.PORT || 3001;
 const path = require("path");
 const app = express();
-const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY || "sk_test_dummy");
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const cors = require("cors");
 
-// Render sits behind a proxy (needed for secure cookies & correct scheme)
-app.set("trust proxy", 1);
+// allow ALL origins, headers, and methods
+app.use(cors({
+  origin: "*",
+  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+  allowedHeaders: ["*"],
+}));
 
-// Allow your frontend origins (and localhost for dev)
-const ALLOWED = new Set([
-  "http://localhost:5173",
-  "https://efoyta-doctor-appointment-app.vercel.app",
-  // optional: preview URLs
-  // e.g. "https://efoyta-doctor-appointment-app-git-main-<user>.vercel.app"
-]);
-
-const corsDelegate = (req, cb) => {
-  const origin = req.header("Origin");
-  const isAllowed =
-    !origin ||
-    ALLOWED.has(origin) ||
-    (origin?.startsWith("https://efoyta-doctor-appointment-app-") &&
-     origin?.endsWith(".vercel.app")); // previews
-
-  cb(null, {
-    origin: isAllowed ? origin : false,      // reflect allowed origin, block otherwise
-    credentials: true,
-    methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
-    // 🔑 Do NOT hardcode allowedHeaders; let cors echo Access-Control-Request-Headers automatically
-    optionsSuccessStatus: 204,
-  });
-};
-
-app.use(cors(corsDelegate));
-app.options("*", cors(corsDelegate)); // handle preflight globally
+// handle preflight
+app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
 
-
-// --- Seed admins (same as before) ---
 const admins = [
   {
     firstName: "Abebe",
@@ -55,130 +32,104 @@ const admins = [
 ];
 
 const insertAdmins = async (admin) => {
-  db.query("SELECT * FROM admins WHERE email = ?", [admin.email], async (err, rows) => {
-    if (err) return console.error("[admins/select] error:", err);
-    if (rows && rows.length >= 1) return;
-
-    db.query(
-      "INSERT INTO admins (firstName, lastName, phone, email, password) VALUES (?, ?, ?, ?, ?)",
-      [
-        admin.firstName,
-        admin.lastName,
-        admin.phone,
-        admin.email,
-        await bcrypt.hash(admin.password, 8),
-      ],
-      (err, result) => {
-        if (err) return console.error("[admins/insert] error:", err);
-        console.log(`Inserted ${result.affectedRows} admin row(s)`);
+  db.query(
+    "SELECT * FROM admins WHERE email = ?",
+    [admin.email],
+    async (err, result) => {
+      if (result.length >= 1) {
+        return;
       }
-    );
-  });
+      db.query(
+        "INSERT INTO admins SET ?",
+        {
+          firstName: admin.firstName,
+          lastName: admin.lastName,
+          phone: admin.phone,
+          email: admin.email,
+          password: await bcrypt.hash(admin.password, 8),
+        },
+        (err, result) => {
+          if (err) throw err;
+
+          console.log(`Inserted/updated ${result.affectedRows} rows`);
+          db.end();
+        }
+      );
+    }
+  );
 };
 
-// --- Helper: Promise wrapper for queries during init ---
-const q = (sql, params = []) =>
-  new Promise((resolve, reject) => {
-    db.query(sql, params, (err, res) => (err ? reject(err) : resolve(res)));
+db.connect((err) => {
+  if (err) throw err;
+  console.log("Connected to MySQL server.");
+
+  const createDatabaseQuery = `CREATE DATABASE IF NOT EXISTS Efoyta`;
+
+  db.query(createDatabaseQuery, (err, results) => {
+    if (err) throw err;
+    const useDatabaseQuery = `USE Efoyta`;
+    db.query(useDatabaseQuery, (err) => {
+      if (err) throw err;
+      console.log("Efoyta database.");
+
+      db.query(
+        "CREATE TABLE IF NOT EXISTS users(id INT AUTO_INCREMENT PRIMARY KEY,firstName text,lastName text, email varchar(100), phone varchar(100), password varchar(100))",
+        (err, result) => {
+          if (err) throw err;
+        }
+      );
+      db.query(
+        "CREATE TABLE IF NOT EXISTS admins(id INT AUTO_INCREMENT PRIMARY KEY,firstName text,lastName text, phone varchar(100), email varchar(100), password varchar(100))",
+        (err, result) => {
+          if (err) throw err;
+        }
+      );
+
+      for (let admin of admins) {
+        insertAdmins(admin);
+      }
+
+      db.query(
+        `CREATE TABLE IF NOT EXISTS applications(id INT AUTO_INCREMENT PRIMARY KEY,
+            userId INT NOT NULL,
+            privilege VARCHAR(100) NOT NULL,
+            startTime VARCHAR(100) DEFAULT '8:30 AM',
+            endTime  VARCHAR(100) DEFAULT '05:00 PM',
+            department VARCHAR(100) NOT NULL,
+            status ENUM('pending', 'declined', 'accepted') NOT NULL DEFAULT 'pending',
+            FOREIGN KEY (userId) REFERENCES users(id))`,
+        (err, result) => {
+          if (err) throw err;
+        }
+      );
+      db.query(
+        "CREATE TABLE IF NOT EXISTS labtechnicians(id INT AUTO_INCREMENT PRIMARY KEY,firstName text,lastName text, phone varchar(100), department text, email varchar(100), password varchar(100))",
+        (err, result) => {
+          if (err) throw err;
+        }
+      );
+      db.query(
+        "CREATE TABLE IF NOT EXISTS doctors(id INT AUTO_INCREMENT PRIMARY KEY, firstName text,lastName text, specialization text, fromTime varchar(100), email varchar(100), toTime varchar(100), phone varchar(100), password varchar(100), rating FLOAT NOT NULL DEFAULT 0.0)",
+        (err, result) => {
+          if (err) throw err;
+        }
+      );
+      db.query(
+        "CREATE TABLE IF NOT EXISTS appointments(appointmentid INT AUTO_INCREMENT PRIMARY KEY, doctorid INT, patientid INT, time VARCHAR(100), date VARCHAR(100), paid TINYINT NOT NULL DEFAULT 0)",
+        (err, result) => {
+          if (err) throw err;
+        }
+      );
+      db.query(
+        "CREATE TABLE IF NOT EXISTS Ratings(doctorid INT, total_votes INT, number_of_votes INT)",
+        (err, result) => {
+          if (err) throw err;
+        }
+      );
+    });
   });
+});
 
-// --- Schema init for SQLite ---
-async function initSchema() {
-  // Users
-  await q(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      firstName TEXT,
-      lastName TEXT,
-      email TEXT UNIQUE,
-      phone TEXT,
-      password TEXT
-    );
-  `);
-
-  // Admins
-  await q(`
-    CREATE TABLE IF NOT EXISTS admins (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      firstName TEXT,
-      lastName TEXT,
-      phone TEXT,
-      email TEXT UNIQUE,
-      password TEXT
-    );
-  `);
-
-  // Applications (status ENUM -> TEXT CHECK)
-  await q(`
-    CREATE TABLE IF NOT EXISTS applications (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER NOT NULL,
-      privilege TEXT NOT NULL,
-      startTime TEXT DEFAULT '8:30 AM',
-      endTime  TEXT DEFAULT '05:00 PM',
-      department TEXT NOT NULL,
-      status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','declined','accepted')),
-      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
-    );
-  `);
-
-  // Lab technicians
-  await q(`
-    CREATE TABLE IF NOT EXISTS labtechnicians (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      firstName TEXT,
-      lastName TEXT,
-      phone TEXT,
-      department TEXT,
-      email TEXT,
-      password TEXT
-    );
-  `);
-
-  // Doctors
-  await q(`
-    CREATE TABLE IF NOT EXISTS doctors (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      firstName TEXT,
-      lastName TEXT,
-      specialization TEXT,
-      fromTime TEXT,
-      email TEXT,
-      toTime TEXT,
-      phone TEXT,
-      password TEXT,
-      rating REAL NOT NULL DEFAULT 0.0
-    );
-  `);
-
-  // Appointments (paid as INTEGER 0/1)
-  await q(`
-    CREATE TABLE IF NOT EXISTS appointments (
-      appointmentid INTEGER PRIMARY KEY AUTOINCREMENT,
-      doctorid INTEGER,
-      patientid INTEGER,
-      time TEXT,
-      date TEXT,
-      paid INTEGER NOT NULL DEFAULT 0
-    );
-  `);
-
-  // Ratings
-  await q(`
-    CREATE TABLE IF NOT EXISTS Ratings (
-      doctorid INTEGER,
-      total_votes INTEGER,
-      number_of_votes INTEGER
-    );
-  `);
-
-  // Seed default admins
-  for (const admin of admins) {
-    await insertAdmins(admin);
-  }
-}
-
-// --- Routes (unchanged) ---
 const userController = require("./controllers/user.controller");
 const doctorsController = require("./controllers/doctor.controller");
 const appointmentsController = require("./controllers/appointment.controller");
@@ -191,22 +142,12 @@ app.use("/doctors", doctorsController);
 app.use("/appointments", appointmentsController);
 app.use("/apply", applicationController);
 
-app.use("/", require("./routes/pages"));
-app.use("/", require("./controllers/book"));
-app.use("/", require("./controllers/lab"));
-app.use("/", require("./controllers/history"));
+app.use("/",require("./routes/pages"));
+app.use("/",require("./controllers/book"));
+app.use("/",require("./controllers/lab"));
+app.use("/",require("./controllers/history"));
 
-// --- Boot ---
-(async () => {
-  try {
-    // (No real connect step needed for SQLite; keep signature for compatibility)
-    db.connect(() => {});
-    await initSchema();
-    app.listen(port, () => {
-      console.log(`app running on port ${port}`);
-    });
-  } catch (e) {
-    console.error("[startup] failed:", e);
-    process.exit(1);
-  }
-})();
+
+app.listen(port, function () {
+  console.log("app running on port 3001");
+});
